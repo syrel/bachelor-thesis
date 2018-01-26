@@ -1,0 +1,3 @@
+! Structure of the editor
+
+One of the requirements for the editor was an ability to embed visual components inside of a text such that they are not deletable nor selectable. We call those elements ==adornments==. In order to unify how text and adornments are being treated, the editor also represents pieces of text as visual elements, thus completely removing the gap between embedded graphical components and text.
