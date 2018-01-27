@@ -1,0 +1,7 @@
+! ConnectorIn the Overview section, we saw how examples dependencies can be expanded in place by utilizing the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+
+[[[example=GtConnectorExamples>>#oneExampleMethod|noCode=true|expanded=true|show=gtLiveIn:]]]
+
+The interface is somewhat similar to the one proposed by Code Bubbles, but it has two key differences:
+# the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
+# the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.

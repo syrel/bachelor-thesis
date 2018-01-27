@@ -1,0 +1,23 @@
+!!Overview
+
+!!!Scalability
+
+The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 2MB of text, and yet it opens smoothly.
+
+[[[example=BrTextEditorExamples>>#newText|noCode=true|expanded=true|show=gtTextIn:]]]
+
+!!!Syntax highlighting and adornments
+
+An obvious application for the text editor is a code editor with syntax highlighting.
+
+[[[example=BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting|expanded=true|noCode=true|show=gtLiveIn:]]]
+
+Like in any other text editor that supports syntax highlighting, the syntax highlighter works in a separate process and changes the existing text. Typically, the syntax highlighting affects text attributes such as color or font weight. However, the moldable editor brings this concept further and allows us to add arbitrary visual elements to a text scene.
+
+For example, in the snippet below, we see the code associated with the example that produces the editor element with syntax highlighting seen above. In addition to the typical Pharo syntax highlighting, we can also notice small triangles inserted in the code. These triangles denote a dependency to another example method, and clicking on one expands the code in place showing another editor.
+
+[[[example=BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting|expanded=true|show=gtLiveIn:]]]
+
+This functionality is obtained through a dedicated syntax highlighter that extends the default Pharo highlighting with an extra logic that adds the triangles as adornments. Clicking on such an adornment adds another adornment with another editor element. Interestingly, this all happens live, which means that if you change the code from the root editor element to no longer refer to an example, the corresponding triangle and embedded editor elements will dissappear. 
+
+The example above also reveals the way to initialize an editor element.
