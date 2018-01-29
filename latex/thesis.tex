@@ -31,34 +31,38 @@ The goal of this work is to show how a text editor can be represented in the sam
 In the first part, we discuss a few applications of such an editor in order to show how a single composition tree makes that editor extremely flexible, and what it could mean to have it in a live programming environment. In the second part, we explain in more detail how the editor is implemented and describe a rope data structure behind a text model. Additionally, we introduce a novel way of storing text attributes and underlying characters in the same data structure, and we show how it simplifies the way existing attributes are expanded on a new inserted text. In a conclusion we present a few directions in which the editor could evolve. We also discuss possible use-cases and more applications of the editor in a context of a live programming environment such as debugger, inspector or live code snippets.
 
 \chapter {Related Work}
-In which we learn what have other done to address similar problems. For example, the work of Goldberg \cite{Gold83a}, Ressia \cite{Ress12a} and, Bergel \cite{Berg12a}
 
 \chapter {The Moldable Editor}
 
-\section{Introduction}
+\section{Overview}
 
 One of the requirements for the editor was an ability to embed visual components inside of text such that they are not deletable nor selectable. We call those elements \textit{adornments}. In order to unify how text and adornments are being treated, the editor also represents pieces of text as visual elements, thus completely removing the gap between embedded graphical components and text which is what allows us to have a single composition tree.
 
 The basis and foundation of the editor is a text model. One of the interesting aspects of that text model is the fact that it is data structure independent. It also allows us to implement different types of text models, for example \code{SubText}, that can scope existing text model within some character interval, or \code{SpanText}, that represents a uniform piece of text with every character having the same attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \code{Text} api. More about text model can be found in the "Text model" chapter.
 
-When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model api or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add ==adornment== attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware developement tools. In order for the editor to be fast and responsive, long and time consuming operations such text parsing and styling should happen in a parallel backround thread. While being easy to explain it is in fact a non-trivial task, since users are able to perform text modification operations while styler applies attributes on that text being modified. In the "Text styler" chapter we will talk more about problems and diffuculties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
+When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model api or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such text parsing and styling should happen in a parallel background thread. While being easy to explain it is in fact a non-trivial task, since users are able to perform text modification operations while styler applies attributes on that text being modified. In the "Text styler" chapter we will talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
 
 In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. A segments update procedure will be discussed in the "Segments" chapter.
 
-Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example ==FastTable== in Pharo, ==RecyclerView== in Android or ==UITableView== in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the visual part of the editor will be explained in more details in the "Rendering" chapter.
+Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android or \textit{UITableView} in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the visual part of the editor will be explained in more details in the "Rendering" chapter.
 
-The last but not least is a ==TextEditor== itself that provides high level text modification api and allows developers to specify shortcuts.
+The last but not least is a \code{TextEditor} itself that provides high level text modification api and allows developers to specify shortcuts.
 
 \section{Text Model}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.65\columnwidth]{figures/text-model-uml.pdf}
+\caption{The UML class diagram of Text Model}
+\figlabel{TextModelUml}
+\end{figure}
+
 In order to display and edit text, an editor requires a text model that provides text modification and enumeration api. In a context of text editor under \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of api methods to support text modifications such as \code{insert:} or \code{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing uses to iterate over all characters in a natural ordered way. Being indexable is also an essential property of a text model, since text stylers require text to have characters accessible by index. It is a consequence of a fact that code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals that are later used by a text styler to apply attributes on a piece of text defined by that integer intervals in a form of a \textit{[from, to]} tuple.
 
-One of the main requirements for the moldable editor is an ability to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. While looking for a data structure that would fit the needs of the moldable editor we found out that there is no the best data structure that is the only choice. It turned out that depending on a context and the way a text editor will be used it may be important to be able to select one or another data structure. Not to mention is the fact that text data structure should be chosen during early development stages, before the editor becomes usable. That is why the text model of the moldable editor is data structure independent and only defines a public api. In order for it to be used by a text editor developers should create concrete implementations of that api with the data structure of choice as a backend. In the following section we will look at different data structures being used by text editors and compare them.
 
 \section{Text data structures}
 
-Reference:
-Charles Crowley. "Data Structures for Text Sequences"
+One of the main requirements for the moldable editor is an ability to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. While looking for a data structure that would fit the needs of the moldable editor we found out that there is no the best data structure that is the only choice. It turned out that depending on a context and the way a text editor will be used it may be important to be able to select one or another data structure. Not to mention is the fact that text data structure should be chosen during early development stages, before the editor becomes usable. That is why the text model of the moldable editor is data structure independent and only defines a public api. In order for it to be used by a text editor developers should create concrete implementations of that api with the data structure of choice as a backend. In the following sub-sections we will look at different data structures being used by text editors and compare them.
 
 \subsection{Pharo}
 
@@ -66,29 +70,37 @@ In Pharo there already exist two text models based on different data structures:
 
 \subsubsection*{Rubric}
 
-==Text== is a default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of ==ByteString== which is nothing else than an immutable array of characters. It means that every text modification such as insertion or deletion requires it to allocate and copy the whole characters array while replacing a subsequence of characters with a requested one. Thus, implementation of text modifications are linear time algorithms, which is unacceptably slow when text size grows over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences. (page 21.  Charles Crowley. "Data Structures for Text Sequences").
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/data-structure-array.pdf}
+\caption{The array method}
+\figlabel{ArrayText}
+\end{figure}
+
+\code{Text} is a default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \code{ByteString} which is nothing else than an immutable array of characters. It means that every text modification such as insertion or deletion requires text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown on \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences. \cite{crowley1998data}
 
 \subsubsection*{TxText}
 
-==TxModel== is a central class representing a text in the TxText editor. Internally is stores character sequences as a double-linked list of spans that consists of an actual text content. A linked list is considered to be an extreme as opposed to an array method of storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest among all other text data structures.  (page 9-10, p20-21.  Charles Crowley. "Data Structures for Text Sequences").
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/data-structure-linked-list.pdf}
+\caption{The linked list method}
+\figlabel{LinkedListText}
+\end{figure}
+
+\code{TxModel} is a central class representing a text in the \textit{TxText editor}. Internally is stores character sequences as a double-linked list of spans that consists of an actual text content. A linked list is considered to be an extreme as opposed to an array method of storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest among all other text data structures. \cite{crowley1998data}
 
 \subsection{Atom}
 
-Reference:
-The State of Atom's Performance, 10th January 2018
-
-Atom text editor uses a memory-efficient data structure similar to a Piece Table. Piece table is a memory efficient data structure based of two buffers, one of which represents original read-only text while the second one stores all modifications done to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. Piece table is considered to be the data structure of choice for a text editor. (p 16. Charles Crowley. "Data Structures for Text Sequences")
+Atom text editor uses a memory-efficient data structure similar to a Piece Table.\cite{atomblog2018} Piece table is a memory efficient data structure based of two buffers, one of which represents original read-only text while the second one stores all modifications done to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. Piece table is considered to be the data structure of choice for a text editor. \cite{crowley1998data}
 
 \subsection{Emacs}
-
-Reference:
-Emacs - The Buffer Gap
 
 TODO
 
 \subsection{Rope}
 
-Reference:
+TODO
 
 
 

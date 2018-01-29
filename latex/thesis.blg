@@ -3,44 +3,47 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: thesis.aux
 The style file: plain.bst
 Database file #1: thesis.bib
-You've used 3 entries,
+Warning--entry type for "atomblog2018" isn't style-file defined
+--line 11 of file thesis.bib
+You've used 5 entries,
             2118 wiz_defined-function locations,
-            518 strings with 4513 characters,
-and the built_in function-call counts, 1144 in all, are:
-= -- 113
-> -- 54
-< -- 1
-+ -- 21
-- -- 18
-* -- 77
-:= -- 188
-add.period$ -- 10
-call.type$ -- 3
-change.case$ -- 17
+            530 strings with 4714 characters,
+and the built_in function-call counts, 1666 in all, are:
+= -- 165
+> -- 68
+< -- 2
++ -- 28
+- -- 22
+* -- 101
+:= -- 270
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 25
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 46
-empty$ -- 89
-format.name$ -- 18
-if$ -- 244
+cite$ -- 5
+duplicate$ -- 69
+empty$ -- 138
+format.name$ -- 22
+if$ -- 359
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 4
-newline$ -- 18
-num.names$ -- 6
-pop$ -- 23
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 27
+num.names$ -- 10
+pop$ -- 36
 preamble$ -- 1
-purify$ -- 15
+purify$ -- 21
 quote$ -- 0
-skip$ -- 32
+skip$ -- 53
 stack$ -- 0
-substring$ -- 66
-swap$ -- 13
-text.length$ -- 1
+substring$ -- 96
+swap$ -- 20
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 10
+type$ -- 18
 warning$ -- 0
-while$ -- 11
-width$ -- 4
-write$ -- 35
+while$ -- 18
+width$ -- 6
+write$ -- 54
+(There was 1 warning)
