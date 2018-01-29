@@ -31,7 +31,7 @@
 \usepackage{alltt}
 \usepackage{amsmath}
 \usepackage{xfrac}
-\usepackage{subfigure}
+\usepackage{subfig}
 \usepackage{appendix}
 \usepackage{stmaryrd}   % for the \shortuparrow
 \usepackage[utopia]{quotchap}
@@ -107,45 +107,6 @@
 \newcommand{\ttimes}{\ensuremath{\times}}
 
 %=============================================================================
-
-\newcommand{\needlines}[1]{\Needspace{#1\baselineskip}}
-
-% source code
-\usepackage{xcolor}
-\usepackage{textcomp}
-\usepackage{listings}
-\definecolor{source}{gray}{0.9}
-\lstset{
-	language={},
-	% characters
-	tabsize=3,
-	upquote=true,
-	escapechar={!},
-	keepspaces=true,
-	breaklines=false,
-	alsoletter={:},
-	breakautoindent=true,
-	columns=fullflexible,
-	showstringspaces=false,
-	basicstyle=\footnotesize\ttfamily,
-	% background
-	frame=single,
-    framerule=0pt,
-	backgroundcolor=\color{source},
-	% numbering
-	numbersep=5pt,
-	numberstyle=\tiny,
-	numberfirstline=true,
-	% captioning
-	captionpos=b,
-	numberbychapter=false,
-	% formatting (html)
-	moredelim=[is][\textbf]{<b>}{</b>},
-	moredelim=[is][\textit]{<i>}{</i>},
-	moredelim=[is][\uline]{<u>}{</u>}}
-\newcommand{\ct}{\lstinline[backgroundcolor=\color{white},basicstyle=\footnotesize\ttfamily]}
-\newcommand{\lct}[1]{{\small\tt #1}}
-
 
 %----------------------------------------------------------------------------
 % labels

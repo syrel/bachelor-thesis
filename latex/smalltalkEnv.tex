@@ -1,0 +1,132 @@
+% !TEX encoding = UTF-8 Unicode
+
+%=============================================================================
+
+% Just add \input{smalltalkEnv} to your file
+% then you can use :
+% \begin{lstlisting}[language=Smalltalk]
+% false become: true.
+% \end{lstlisting}
+
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{etoolbox}
+\usepackage{textcomp}
+\usepackage{xpatch}
+\usepackage{tcolorbox}
+
+\definecolor{source}{gray}{0.95}
+
+\definecolor{stComment}{rgb}{0.5,0.5,0.5}
+\definecolor{stString}{rgb}{0.58,0,0.82}
+\definecolor{stKeywords}{rgb}{0.21,0.55,0.7}
+\definecolor{stNumbers}{rgb}{.5,0,0}
+
+\newtoggle{InString}{}% Keep track of if we are within a string
+\togglefalse{InString}% Assume not initally in string
+\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{stNumbers}#1}}%
+\newcommand*{\ProcessQuote}[1]{#1\iftoggle{InString}{\global\togglefalse{InString}}{\global\toggletrue{InString}}}%
+
+\lstdefinelanguage{Smalltalk}{
+  basicstyle=\sffamily\scriptsize,
+  keywordstyle=\color{stKeywords},
+  commentstyle=\color{stComment},
+  stringstyle=\color{stString},
+  alsoletter=\#,
+  identifierstyle=\idstyle, 
+  showstringspaces=false,
+  morekeywords={true,false,self,super,nil},
+  backgroundcolor=\color{source},
+  sensitive=true, 
+  morecomment=[s]{"}{"}, 
+  morestring=[d]', 
+  style=SmalltalkStyle,
+  literate=
+    {BANG}{!}1
+    {UNDERSCORE}{\_}1
+    {\\st}{Smalltalk}9 % convenience -- in case \st occurs in code
+    % {'}{{\textquotesingle}}1 % replaced by upquote=true in \lstset
+    {_}{{$\leftarrow$}}1
+    {>>>}{{\sep}}1
+    {^}{{$\uparrow$}}1
+    {~}{{$\sim$}}1
+    {-}{{\sf -\hspace{-0.13em}-}}1  % the goal is to make - the same width as +
+    {+}{\raisebox{0.08ex}{+}}1		% and to raise + off the baseline to match -
+    {-->}{{\quad$\longrightarrow$\quad}}3
+	, % Don't forget the comma at the end!
+  tabsize=2,
+}
+
+
+
+\makeatletter%
+\newcommand*\idstyle[1]{%
+  \expandafter\id@style\the\lst@token{#1}\relax%
+}
+\def\id@style#1#2\relax{%
+  \ifnum\pdfstrcmp{#1}{\#}=0%
+  \color{stString} \the\lst@token%
+  \else%
+  \edef\tempa{\uccode`#1}%
+  \edef\tempb{`#1}%
+  \ifnum\tempa=\tempb%
+  \color{blue} \the\lst@token%
+  \else%
+  \the\lst@token%
+  \fi%
+  \fi%
+}
+
+\lstdefinestyle{SmalltalkStyle}{ 
+  literate=%
+  {^}{{$\uparrow$}}1% 
+  % {"}{{{\ProcessQuote{"}}}}1% Disable coloring within double quotes
+  % {'}{{{\ProcessQuote{'}}}}1% Disable coloring within single quote
+  {0}{{{\ColorIfNotInString{0}}}}1%
+  {1}{{{\ColorIfNotInString{1}}}}1%
+  {2}{{{\ColorIfNotInString{2}}}}1%
+  {3}{{{\ColorIfNotInString{3}}}}1%
+  {4}{{{\ColorIfNotInString{4}}}}1%
+  {5}{{{\ColorIfNotInString{5}}}}1%
+  {6}{{{\ColorIfNotInString{6}}}}1%
+  {7}{{{\ColorIfNotInString{7}}}}1%
+  {8}{{{\ColorIfNotInString{8}}}}1%
+  {9}{{{\ColorIfNotInString{9}}}}1%
+} 
+
+\lstset{% setup listings
+    framexleftmargin=6pt,
+    framextopmargin=6pt,
+    framexbottommargin=6pt, 
+    frame=tb, framerule=0pt,
+}
+
+
+% In-line code (literal)  with background color
+% Normally use this for all in-line code:
+\newcommand{\ct}[1]{{\colorbox{source}{\lstinline[mathescape=false,backgroundcolor=\color{source},basicstyle={\sffamily\small}]{#1}}}}
+
+
+% In-line code (latex enabled)
+% Use this only in special situations where \ct does not work
+% (within section headings ...):
+\newcommand{\lct}[1]{{\textsf{\textup{#1}}}}
+% Code environments
+\lstnewenvironment{code}{%
+	\lstset{%
+	    escapeinside={(*@}{@*)},
+		% frame=lines,
+		frame=single,
+		framerule=0pt,
+		mathescape=false
+	}%
+}{%
+}
+
+
+\newcommand*\DNumber{\addtocounter{lstnumber}{-1}}
+%%% Always I forget this so I created some aliases
+\def\ContinueLineNumber{\lstset{firstnumber=last}}
+\def\StartLineAt#1{\lstset{firstnumber=#1}}
+\let\numberLineAt\StartLineAt

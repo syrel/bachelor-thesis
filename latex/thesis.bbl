@@ -1,29 +1,13 @@
 \begin{thebibliography}{1}
 
-\bibitem{Berg12a}
-Alexandre Bergel, Felipe Banados, Romain Robbes, and David R{\"o}thlisberger.
-\newblock Spy: A flexible code profiling framework.
-\newblock {\em Computer Languages, Systems \& Structures}, 38(1):16--28, 2012.
-
 \bibitem{crowley1998data}
 Charles Crowley.
 \newblock Data structures for text sequences.
 \newblock {\em Computer Science Department, University of New Mexico, Date},
   pages 1--29, 1998.
 
-\bibitem{Gold83a}
-Adele Goldberg and David Robson.
-\newblock {\em Smalltalk-80: the language and its implementation}.
-\newblock Addison-Wesley Longman Publishing Co., Inc., 1983.
-
 \bibitem{atomblog2018}
 GitHub Inc.
 \newblock The state of atom's performance, 01 2018.
-
-\bibitem{Ress12a}
-Jorge Ressia, Alexandre Bergel, and Oscar Nierstrasz.
-\newblock Object-centric debugging.
-\newblock In {\em Proceedings of the 34th International Conference on Software
-  Engineering}, pages 485--495. IEEE Press, 2012.
 
 \end{thebibliography}

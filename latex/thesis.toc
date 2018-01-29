@@ -9,5 +9,9 @@
 \contentsline {subsection}{\numberline {3.3.3}Emacs}{7}{subsection.3.3.3}
 \contentsline {subsection}{\numberline {3.3.4}Rope}{7}{subsection.3.3.4}
 \contentsline {chapter}{\numberline {4}The Validation}{8}{chapter.4}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{9}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{10}{chapter.6}
+\contentsline {section}{\numberline {4.1}Overview}{8}{section.4.1}
+\contentsline {section}{\numberline {4.2}Transcript}{9}{section.4.2}
+\contentsline {section}{\numberline {4.3}Connector}{11}{section.4.3}
+\contentsline {section}{\numberline {4.4}Documenter}{12}{section.4.4}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{13}{chapter.5}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{14}{chapter.6}

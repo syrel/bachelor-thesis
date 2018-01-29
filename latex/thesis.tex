@@ -1,6 +1,8 @@
  \documentclass[oneside,a4paper,12pt]{book}
 %\pagestyle{headings}
 \frontmatter
+
+\input{smalltalkEnv}
 \input{preamble}
 
 % A B S T R A C T
@@ -38,7 +40,7 @@ In the first part, we discuss a few applications of such an editor in order to s
 
 One of the requirements for the editor was an ability to embed visual components inside of text such that they are not deletable nor selectable. We call those elements \textit{adornments}. In order to unify how text and adornments are being treated, the editor also represents pieces of text as visual elements, thus completely removing the gap between embedded graphical components and text which is what allows us to have a single composition tree.
 
-The basis and foundation of the editor is a text model. One of the interesting aspects of that text model is the fact that it is data structure independent. It also allows us to implement different types of text models, for example \code{SubText}, that can scope existing text model within some character interval, or \code{SpanText}, that represents a uniform piece of text with every character having the same attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \code{Text} api. More about text model can be found in the "Text model" chapter.
+The basis and foundation of the editor is a text model. One of the interesting aspects of that text model is the fact that it is data structure independent. It also allows us to implement different types of text models, for example \ct{SubText}, that can scope existing text model within some character interval, or \ct{SpanText}, that represents a uniform piece of text with every character having the same attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \ct{Text} api. More about text model can be found in the "Text model" chapter.
 
 When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model api or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such text parsing and styling should happen in a parallel background thread. While being easy to explain it is in fact a non-trivial task, since users are able to perform text modification operations while styler applies attributes on that text being modified. In the "Text styler" chapter we will talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
 
@@ -46,7 +48,7 @@ In order for the moldable editor to be scalable, it should split text into logic
 
 Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android or \textit{UITableView} in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the visual part of the editor will be explained in more details in the "Rendering" chapter.
 
-The last but not least is a \code{TextEditor} itself that provides high level text modification api and allows developers to specify shortcuts.
+The last but not least is a \ct{TextEditor} itself that provides high level text modification api and allows developers to specify shortcuts.
 
 \section{Text Model}
 
@@ -57,7 +59,7 @@ The last but not least is a \code{TextEditor} itself that provides high level te
 \figlabel{TextModelUml}
 \end{figure}
 
-In order to display and edit text, an editor requires a text model that provides text modification and enumeration api. In a context of text editor under \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of api methods to support text modifications such as \code{insert:} or \code{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing uses to iterate over all characters in a natural ordered way. Being indexable is also an essential property of a text model, since text stylers require text to have characters accessible by index. It is a consequence of a fact that code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals that are later used by a text styler to apply attributes on a piece of text defined by that integer intervals in a form of a \textit{[from, to]} tuple.
+In order to display and edit text, an editor requires a text model that provides text modification and enumeration api. In a context of text editor under \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of api methods to support text modifications such as \ct{insert:} or \ct{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing uses to iterate over all characters in a natural ordered way. Being indexable is also an essential property of a text model, since text stylers require text to have characters accessible by index. It is a consequence of a fact that code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals that are later used by a text styler to apply attributes on a piece of text defined by that integer intervals in a form of a \textit{[from, to]} tuple.
 
 
 \section{Text data structures}
@@ -66,7 +68,7 @@ One of the main requirements for the moldable editor is an ability to manipulate
 
 \subsection{Pharo}
 
-In Pharo there already exist two text models based on different data structures: one is \code{Text} which is used by both \textit{Morphic} and \textit{Rubric} text editors, and \code{TxModel} used by \textit{TxText editor}. In the following sections we will compare and evaluate those text models regarding various properties such as ability to store, access and modify large pieces of text or whether they allow developers to embed non-textual object within text.
+In Pharo there already exist two text models based on different data structures: one is \ct{Text} which is used by both \textit{Morphic} and \textit{Rubric} text editors, and \ct{TxModel} used by \textit{TxText editor}. In the following sections we will compare and evaluate those text models regarding various properties such as ability to store, access and modify large pieces of text or whether they allow developers to embed non-textual object within text.
 
 \subsubsection*{Rubric}
 
@@ -77,7 +79,7 @@ In Pharo there already exist two text models based on different data structures:
 \figlabel{ArrayText}
 \end{figure}
 
-\code{Text} is a default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \code{ByteString} which is nothing else than an immutable array of characters. It means that every text modification such as insertion or deletion requires text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown on \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences. \cite{crowley1998data}
+\code{Text} is a default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \ct{ByteString} which is nothing else than an immutable array of characters. It means that every text modification such as insertion or deletion requires text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown on \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences. \cite{crowley1998data}
 
 \subsubsection*{TxText}
 
@@ -103,9 +105,108 @@ TODO
 TODO
 
 
-
+%===================================================================================================
+%===================================================================================================
+%========================================= A P P L I C A T I O N S ========================================
+%===================================================================================================
+%===================================================================================================
 \chapter {The Validation}
-In which you show how well the solution works.
+
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------- O V E R V I E W ---------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\section{Overview}
+
+\subsection*{Scalability}
+
+The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 2MB of text, and yet it opens smoothly.
+
+%[[[example=BrTextEditorExamples>>#newText|noCode=true|expanded=true|show=gtTextIn:]]]
+
+\subsection*{Syntax highlighting and adornments}
+
+An obvious application for the text editor is a code editor with syntax highlighting.
+
+%[[[example=BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting|expanded=true|noCode=true|show=gtLiveIn:]]]
+
+Like in any other text editor that supports syntax highlighting, the syntax highlighter works in a separate process and changes the existing text. Typically, the syntax highlighting affects text attributes such as color or font weight. However, the moldable editor brings this concept further and allows us to add arbitrary visual elements to a text scene.
+
+For example, in the snippet below, we see the code associated with the example that produces the editor element with syntax highlighting seen above. In addition to the typical Pharo syntax highlighting, we can also notice small triangles inserted in the code. These triangles denote a dependency to another example method, and clicking on one expands the code in place showing another editor.
+
+%[[[example=BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting|expanded=true|show=gtLiveIn:]]]
+
+This functionality is obtained through a dedicated syntax highlighter that extends the default Pharo highlighting with an extra logic that adds the triangles as adornments. Clicking on such an adornment adds another adornment with another editor element. Interestingly, this all happens live, which means that if you change the code from the root editor element to no longer refer to an example, the corresponding triangle and embedded editor elements will disappear. 
+
+The example above also reveals the way to initialise an editor element.
+
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------- T R A N S C R I P T -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Transcript}
+
+Due to its rich abilities, the moldable editor has the potential of changing all tools that rely on textual representations. One such a tool is the Transcript.
+In a context Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. Existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them into a file.
+
+\begin{figure*}[t]
+\centering
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/pharo-transcript.png}\figlabel{PharoTranscript}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/chrome-console.png}\figlabel{ChromeConsole}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/firefox-web-console.png}\figlabel{FirefoxWebConsole}}
+
+\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
+\figlabel{TranscriptTools}
+\end{figure*}
+Many languages have support of the message logging and their IDEs provide dedicated tools allowing users to browse and read that log. For example in \textit{JavaScript}, the \textit{Console} is an object with an API that can be used to log runtime artefacts such as strings, arrays, functions or object. By default, most modern web browsers are shipped with developer tools and one of them is an interactive console. For example. Mozilla Firefox provides \textit{Web Console} \footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Web_Console}} which is different from Google Chrome's \textit{Console} \footnote{\url{https://developers.google.com/web/tools/chrome-devtools/console/}} while providing very similar functionality.The goal of GT Transcript is to offer a rich and interactive interface for displaying live information coming from a system.  
+
+\subsection*{The API}
+
+The API is backward compatible with the existing transcript. To enable the new features, we introduced a builder. For example, \ct{transcript nextPutAll: 'something'} becomes \ct{transcript next putAll: 'something'}. Between \textit{next} and \textit{putAll:}, we can add multiple attributes to the text output.
+
+The following example shows the complete API:
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\columnwidth]{images/gt-transcript-complete-api.png}
+\caption{Visual output of \lstref{GtTranscriptCompleteApiCode}}
+\figlabel{GtTranscriptCompleteApi}
+\end{figure}
+
+\begin{minipage}[t]{0.95\textwidth}
+\begin{lstlisting}[language=Smalltalk, caption={The complete api of the GT-Transcript},captionpos=b, label={lst:GtTranscriptCompleteApiCode}]
+| transcript |transcript := GtTranscript new.transcript 	nextPutAll: 'This is an example of';	space;	nextPutAll: 'the new GT Transcript';	nextPut: '.';	cr.transcript next	putAll: 'Beside typical text, it can also handle:';	cr.transcript next	tab;	color: Color blue;	putAll: 'Coloured text';	cr.transcript tab.transcript next		fontSize: 20;	putAll: 'Varying size text';	cr.transcript next	tab;	expanding: [ BlElement new background: Color gray ];	putAll: 'Embellished with extra expansion';	cr.[ 1/0 ] on: Error do: [ :err | 	transcript next 		tab;		putAll: 'Exception: ';		showException: err;		cr ].transcript next 	tab;	italic;	streamAll: [ transcript next putAll: 'And others ...' ].
+\end{lstlisting}
+
+\end{minipage}
+
+\subsection*{Logging an animation}
+
+To get an idea of how this tool could be useful, take a look at the following example. A Bloc animation is logged in a visual, domain centric way, providing insight far superior to plain text.
+
+%[[[example=GtTranscriptExamples>>#transcriptWitAnimation|expanded=true|show=gtLiveIn:]]]
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\section{Connector}
+
+In the Overview section, we saw how examples dependencies can be expanded in place by utilizing the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+
+%[[[example=GtConnectorExamples>>#oneExampleMethod|noCode=true|expanded=true|show=gtLiveIn:]]]
+
+The interface is somewhat similar to the one proposed by Code Bubbles, but it has two key differences:
+\begin{itemize}  
+\item the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
+\item the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
+\end{itemize}
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------- D O C U M E N T E R ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+\section{Documenter}
+
+The Documenter offers live rendering of Pillar documents.
+
 
 \chapter {Conclusion and Future Work}
 In which we step back, have a critical look at the entire work, then conclude, and learn what lays beyond this thesis.
