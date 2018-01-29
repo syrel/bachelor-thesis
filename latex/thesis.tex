@@ -163,7 +163,6 @@ Due to its rich abilities, the moldable editor has the potential of changing all
 
 The API is backward compatible with the existing transcript. To enable the new features, we introduced a builder. For example, \ct{transcript nextPutAll: 'something'} becomes \ct{transcript next putAll: 'something'}. Between \textit{next} and \textit{putAll:}, we can add multiple attributes to the text output.
 
-The following example shows the complete API:
 
 \begin{figure}[t]
 \centering
@@ -173,6 +172,9 @@ The following example shows the complete API:
 \end{figure}
 
 \begin{minipage}[t]{0.95\textwidth}
+
+The following example shows the complete API:
+
 \begin{lstlisting}[language=Smalltalk, caption={The complete api of the GT-Transcript},captionpos=b, label={lst:GtTranscriptCompleteApiCode}]
 | transcript |transcript := GtTranscript new.transcript 	nextPutAll: 'This is an example of';	space;	nextPutAll: 'the new GT Transcript';	nextPut: '.';	cr.transcript next	putAll: 'Beside typical text, it can also handle:';	cr.transcript next	tab;	color: Color blue;	putAll: 'Coloured text';	cr.transcript tab.transcript next		fontSize: 20;	putAll: 'Varying size text';	cr.transcript next	tab;	expanding: [ BlElement new background: Color gray ];	putAll: 'Embellished with extra expansion';	cr.[ 1/0 ] on: Error do: [ :err | 	transcript next 		tab;		putAll: 'Exception: ';		showException: err;		cr ].transcript next 	tab;	italic;	streamAll: [ transcript next putAll: 'And others ...' ].
 \end{lstlisting}
@@ -181,19 +183,30 @@ The following example shows the complete API:
 
 \subsection*{Logging an animation}
 
-To get an idea of how this tool could be useful, take a look at the following example. A Bloc animation is logged in a visual, domain centric way, providing insight far superior to plain text.
+To get an idea of how this tool could be useful, take a look at the following example on the \figref{GtTranscriptAnimation}. A Bloc animation is logged in a visual, domain centric way, providing insight far superior to plain text.
 
-%[[[example=GtTranscriptExamples>>#transcriptWitAnimation|expanded=true|show=gtLiveIn:]]]
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{images/gt-transcript-animation.png}
+\caption{Visual logging of Animation with GT Transcript}
+\figlabel{GtTranscriptAnimation}
+\end{figure}
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
 \section{Connector}
 
-In the Overview section, we saw how examples dependencies can be expanded in place by utilizing the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+In the Overview section, we saw how examples dependencies can be expanded in place by utilising the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
 
-%[[[example=GtConnectorExamples>>#oneExampleMethod|noCode=true|expanded=true|show=gtLiveIn:]]]
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\columnwidth]{images/gt-connector.png}
+\caption{GT Connector opened on an example method}
+\figlabel{GtConnector}
+\end{figure}
 
-The interface is somewhat similar to the one proposed by Code Bubbles, but it has two key differences:
+The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}, but it has two key differences:
 \begin{itemize}  
 \item the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
 \item the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
@@ -202,7 +215,7 @@ The interface is somewhat similar to the one proposed by Code Bubbles, but it ha
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------- D O C U M E N T E R ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+\newpage
 \section{Documenter}
 
 The Documenter offers live rendering of Pillar documents.
