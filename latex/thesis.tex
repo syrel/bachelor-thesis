@@ -46,7 +46,7 @@ When talking about text model we should not forget about text style, which is de
 
 In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. A segments update procedure will be discussed in the "Segments" chapter.
 
-Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android or \textit{UITableView} in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the visual part of the editor will be explained in more details in the "Rendering" chapter.
+Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the visual part of the editor will be explained in more details in the "Rendering" chapter.
 
 The last but not least is a \ct{TextEditor} itself that provides high level text modification api and allows developers to specify shortcuts.
 
@@ -100,10 +100,57 @@ Atom text editor uses a memory-efficient data structure similar to a Piece Table
 
 TODO
 
+\newpage
 \subsection{Rope}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/rope-uml.pdf}
+\caption{UML class diagram of the Rope hierarchy}
+\figlabel{RopeUml}
+\end{figure}
+
+\begin{figure*}[ht]
+\centering
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-1.png}\figlabel{RopeTree1}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-2.png}\figlabel{RopeTree2}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-3.png}\figlabel{RopeTree3}}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-4.png}\figlabel{RopeTree4}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-5.png}\figlabel{RopeTree5}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-6.png}\figlabel{RopeTree6}}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-7.png}\figlabel{RopeTree7}}\hspace{0.1cm}
+
+\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
+\figlabel{RopeTree1}
+\end{figure*}
+
+\section{Text style}
+
+Text styling and syntax highlighting play an important role for the editor as it should be scalable and responsive. That is why, performing an operation of styling or syntax highlighting in a parallel thread is the only viable option. Unfortunately, it brings its own problems and difficulties such as thread safety and text synchronisation. 
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/editor-text-styling.pdf}
+\caption{UML Sequence diagram of the styling process}
+\figlabel{EditorTextStyling}
+\end{figure}
+
+\newpage
+\section{Segments}
 
 TODO
 
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------- R E N D E R I N G --------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\section{Rendering}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\columnwidth]{images/rendering-elements-mapping.png}
+\caption{Visual output of \lstref{RenderingElementsMapping}}
+\figlabel{GtTranscriptCompleteApi}
+\end{figure}
 
 %===================================================================================================
 %===================================================================================================
@@ -146,7 +193,9 @@ The example above also reveals the way to initialise an editor element.
 \section{Transcript}
 
 Due to its rich abilities, the moldable editor has the potential of changing all tools that rely on textual representations. One such a tool is the Transcript.
-In a context Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. Existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them into a file.
+
+In a context Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. Existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them into a file.
+
 
 \begin{figure*}[t]
 \centering
@@ -157,7 +206,10 @@ Due to its rich abilities, the moldable editor has the potential of changing all
 \caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
 \figlabel{TranscriptTools}
 \end{figure*}
-Many languages have support of the message logging and their IDEs provide dedicated tools allowing users to browse and read that log. For example in \textit{JavaScript}, the \textit{Console} is an object with an API that can be used to log runtime artefacts such as strings, arrays, functions or object. By default, most modern web browsers are shipped with developer tools and one of them is an interactive console. For example. Mozilla Firefox provides \textit{Web Console} \footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Web_Console}} which is different from Google Chrome's \textit{Console} \footnote{\url{https://developers.google.com/web/tools/chrome-devtools/console/}} while providing very similar functionality.The goal of GT Transcript is to offer a rich and interactive interface for displaying live information coming from a system.  
+
+Many languages have support of the message logging and their IDEs provide dedicated tools allowing users to browse and read that log. For example in \textit{JavaScript}, the \textit{Console} is an object with an API that can be used to log runtime artefacts such as strings, arrays, functions or object. By default, most modern web browsers are shipped with developer tools and one of them is an interactive console. For example. Mozilla Firefox provides \textit{Web Console} \footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Web_Console}} which is different from Google Chrome's \textit{Console} \footnote{\url{https://developers.google.com/web/tools/chrome-devtools/console/}} while providing very similar functionality.
+
+The goal of GT Transcript is to offer a rich and interactive interface for displaying live information coming from a system.  
 
 \subsection*{The API}
 
@@ -176,7 +228,42 @@ The API is backward compatible with the existing transcript. To enable the new f
 The following example shows the complete API:
 
 \begin{lstlisting}[language=Smalltalk, caption={The complete api of the GT-Transcript},captionpos=b, label={lst:GtTranscriptCompleteApiCode}]
-| transcript |transcript := GtTranscript new.transcript 	nextPutAll: 'This is an example of';	space;	nextPutAll: 'the new GT Transcript';	nextPut: '.';	cr.transcript next	putAll: 'Beside typical text, it can also handle:';	cr.transcript next	tab;	color: Color blue;	putAll: 'Coloured text';	cr.transcript tab.transcript next		fontSize: 20;	putAll: 'Varying size text';	cr.transcript next	tab;	expanding: [ BlElement new background: Color gray ];	putAll: 'Embellished with extra expansion';	cr.[ 1/0 ] on: Error do: [ :err | 	transcript next 		tab;		putAll: 'Exception: ';		showException: err;		cr ].transcript next 	tab;	italic;	streamAll: [ transcript next putAll: 'And others ...' ].
+| transcript |
+transcript := GtTranscript new.
+transcript 
+	nextPutAll: 'This is an example of';
+	space;
+	nextPutAll: 'the new GT Transcript';
+	nextPut: '.';
+	cr.
+transcript next
+	putAll: 'Beside typical text, it can also handle:';
+	cr.
+transcript next
+	tab;
+	color: Color blue;
+	putAll: 'Coloured text';
+	cr.
+transcript tab.
+transcript next	
+	fontSize: 20;
+	putAll: 'Varying size text';
+	cr.
+transcript next
+	tab;
+	expanding: [ BlElement new background: Color gray ];
+	putAll: 'Embellished with extra expansion';
+	cr.
+[ 1/0 ] on: Error do: [ :err | 
+	transcript next 
+		tab;
+		putAll: 'Exception: ';
+		showException: err;
+		cr ].
+transcript next 
+	tab;
+	italic;
+	streamAll: [ transcript next putAll: 'And others ...' ].
 \end{lstlisting}
 
 \end{minipage}
@@ -219,7 +306,23 @@ The interface is somewhat similar to the one proposed by Code Bubbles \footnote{
 \section{Documenter}
 
 The Documenter offers live rendering of Pillar documents.
+For example, Documenter can embed pictures right in place:
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-example-pictures.png}
+\caption{Visual logging of Animation with GT Transcript}
+\figlabel{GtDocumenterMondrianExamplePictures}
+\end{figure}
+
+And it can even embed live code that can be previewed in place:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-expanded-examples.png}
+\caption{Visual logging of Animation with GT Transcript}
+\figlabel{GtDocumenterMondrianExpandedExamples}
+\end{figure}
 
 \chapter {Conclusion and Future Work}
 In which we step back, have a critical look at the entire work, then conclude, and learn what lays beyond this thesis.
