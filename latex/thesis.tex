@@ -152,25 +152,38 @@ One possible solution would be to implement a locking mechanism and allow only o
 \figlabel{EditorTextStylingSequence}
 \end{figure}
 
-As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used in order to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that has been copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
+As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used in order to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that has been copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
 
-As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking editor's integrity. Then editor checks whether an original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is a case, the editor asks it text model to replace its content with the content of the styled one, otherwise a styled version is discarded. As a final step editor performs invalidation in order to update the on screen rendering to correspond a new text state.
-
-\newpage
-\section{Segments}
-
-TODO
+As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking editor's integrity. Then editor checks whether the original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is a case, the editor asks current text model to replace its content with the content of the styled one, otherwise a styled version is discarded. As a final step editor performs invalidation in order to update the on screen rendering to correspond a new text state.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%-------------------------------------------------------------------------- R E N D E R I N G --------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%--------------------------------------------------------- S E G M E N T S     A N D    R E N D E R I N G -----------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-\section{Rendering}
+\section{Segments and Rendering}
+
+In order for the editor to be scalable it should be implemented in such a way that the overall performance is independent from the text size. A common technique to achieve it is to only process a part of the scene that is currently visible to the user. It means that we should not render and lay text out if it is outsize of the current viewport of the editor. Similar behaviour can be found in various graphical frameworks. A set of widgets that work only with visible elements includes for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android and others. Bloc \footnote{\url{https://github.com/pharo-graphics/Bloc}} graphical framework that is used as an underlying layer for the Moldable Editor contains such a widget, called \textit{InfiniteElement}, where \textit{infinite} stands for \textit{practically infinite} as it allows developers to create scrolling lists that are able to display large datasets. \figref{InfiniteList} shows a high level overview of the \textit{InfiniteElement's}scrolling behaviour. At any time only visible graphical elements are added to the composition tree. It allows text editor to render its content almost instantly and makes it possible to have smooth scrolling animation. When a viewport of the text editor is resized only a fraction of the overall text has to be remeasured and layered out.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\columnwidth]{images/rendering-elements-mapping.png}
-\caption{Visual output of \lstref{RenderingElementsMapping}}
-\figlabel{GtTranscriptCompleteApi}
+\includegraphics[width=1.0\columnwidth]{figures/infinite-list.pdf}
+\caption{Scrolling items in and out of viewport using \textit{InfiniteElement}}
+\figlabel{InfiniteList}
+\end{figure}
+
+However, the described approach has its own limitation. In order for the \textit{InfiniteElement} to create or reuse visual elements on demand, underlying data source has to be indexable and discrete. It means that the whole text has to be split in so called \textit{Segments}. 
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\columnwidth]{figures/text-model-segments.pdf}
+\caption{Segments}
+\figlabel{TextModelSegments}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/rendering-elements-mapping.png}
+\caption{A structure of the graphical composition tree}
+\figlabel{RenderingElementsMapping}
 \end{figure}
 
 %===================================================================================================
