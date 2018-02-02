@@ -2,9 +2,9 @@
 \contentsline {chapter}{\numberline {2}Related Work}{2}{chapter.2}
 \contentsline {chapter}{\numberline {3}The Moldable Editor}{3}{chapter.3}
 \contentsline {section}{\numberline {3.1}Overview}{3}{section.3.1}
-\contentsline {section}{\numberline {3.2}Text Model}{4}{section.3.2}
-\contentsline {section}{\numberline {3.3}Text data structures}{5}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Pharo}{5}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.2}Text Model}{5}{section.3.2}
+\contentsline {section}{\numberline {3.3}Text data structures}{6}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Pharo}{6}{subsection.3.3.1}
 \contentsline {subsection}{\numberline {3.3.2}Atom}{7}{subsection.3.3.2}
 \contentsline {subsection}{\numberline {3.3.3}Emacs}{7}{subsection.3.3.3}
 \contentsline {subsection}{\numberline {3.3.4}Rope}{8}{subsection.3.3.4}
@@ -12,8 +12,8 @@
 \contentsline {section}{\numberline {3.5}Segments and Rendering}{12}{section.3.5}
 \contentsline {chapter}{\numberline {4}The Validation}{15}{chapter.4}
 \contentsline {section}{\numberline {4.1}Overview}{15}{section.4.1}
-\contentsline {section}{\numberline {4.2}Transcript}{16}{section.4.2}
-\contentsline {section}{\numberline {4.3}Connector}{19}{section.4.3}
-\contentsline {section}{\numberline {4.4}Documenter}{20}{section.4.4}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{22}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{23}{chapter.6}
+\contentsline {section}{\numberline {4.2}Transcript}{17}{section.4.2}
+\contentsline {section}{\numberline {4.3}Connector}{20}{section.4.3}
+\contentsline {section}{\numberline {4.4}Documenter}{22}{section.4.4}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{24}{chapter.5}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{25}{chapter.6}
