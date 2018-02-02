@@ -233,22 +233,23 @@ The moldable editor is both flexible and scalable. For example, the following pi
 
 \newpage
 \subsection*{Syntax highlighting and adornments}
+\label{SyntaxHighlightingAndAdornments}
 
 An obvious application for the text editor is a code editor with syntax highlighting. Like in any other text editor that supports syntax highlighting, the syntax highlighter works in a separate process and changes the existing text. Typically, the syntax highlighting affects text attributes such as color or font weight. However, the moldable editor brings this concept further and allows us to add arbitrary visual elements to a text scene.
 
-For example, in the snippet below (\figref{EditorOnExampleCollapsed}), we see the code associated with the example that produces the editor element with syntax highlighting seen above. In addition to the typical Pharo syntax highlighting, we can also notice small triangles inserted in the code. These triangles denote a dependency to another example method, and clicking on one expands the code in place showing another editor (\figref{EditorOnExampleExpanded}).
+For example, in the snippet below (\figref{EditorOnExampleCollapsed}), we see the code associated with the example that produces the editor element with syntax highlighting. In addition to the typical Pharo syntax highlighting, we can also notice small triangles inserted in the code. These triangles denote a dependency to another example method, and clicking on one expands the code in place showing another editor (\figref{EditorOnExampleExpanded}).
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\columnwidth]{images/editor-example-collapsed.png}
-\caption{Segments}
+\caption{The editor with syntax highlighting}
 \figlabel{EditorOnExampleCollapsed}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\columnwidth]{images/editor-example-expanded.png}
-\caption{Segments}
+\caption{The editor with expanded example}
 \figlabel{EditorOnExampleExpanded}
 \end{figure}
 
@@ -266,14 +267,13 @@ Due to its rich abilities, the moldable editor has the potential of changing all
 
 In a context Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. Existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them into a file.
 
-
 \begin{figure*}[t]
 \centering
 \subfloat[]{\includegraphics[width=0.32\textwidth]{images/pharo-transcript.png}\figlabel{PharoTranscript}}\hspace{0.1cm}
 \subfloat[]{\includegraphics[width=0.32\textwidth]{images/chrome-console.png}\figlabel{ChromeConsole}}\hspace{0.1cm}
 \subfloat[]{\includegraphics[width=0.32\textwidth]{images/firefox-web-console.png}\figlabel{FirefoxWebConsole}}
 
-\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
+\caption{Examples of a transcript or console tools: \emph{a)} the standard Pharo Transcript; \emph{b)} Chrome Console; \emph{c)} Firefox WebConsole}  
 \figlabel{TranscriptTools}
 \end{figure*}
 
@@ -338,8 +338,8 @@ transcript next
 
 \end{minipage}
 
+\newpage
 \subsection*{Logging an animation}
-
 To get an idea of how this tool could be useful, take a look at the following example on the \figref{GtTranscriptAnimation}. A Bloc animation is logged in a visual, domain centric way, providing insight far superior to plain text.
 
 \begin{figure}[h]
@@ -353,7 +353,8 @@ To get an idea of how this tool could be useful, take a look at the following ex
 %--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Connector}
 
-In the Overview section, we saw how examples dependencies can be expanded in place by utilising the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+In the \ref{SyntaxHighlightingAndAdornments} section, we saw how examples dependencies can be expanded in place by utilising the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}.
 
 \begin{figure}[t]
 \centering
@@ -362,11 +363,14 @@ In the Overview section, we saw how examples dependencies can be expanded in pla
 \figlabel{GtConnector}
 \end{figure}
 
-The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}, but it has two key differences:
+\newpage
+However, it has two key differences:
 \begin{itemize}  
 \item the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
 \item the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
 \end{itemize}
+
+
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------- D O C U M E N T E R ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -374,22 +378,25 @@ The interface is somewhat similar to the one proposed by Code Bubbles \footnote{
 \newpage
 \section{Documenter}
 
-The Documenter offers live rendering of Pillar documents.
+The Documenter offers live rendering of Pillar\footnote{\url{https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html}} documents.
 For example, Documenter can embed pictures right in place:
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-example-pictures.png}
-\caption{Visual logging of Animation with GT Transcript}
+%\caption{Documenter opened on a Mondrian documentation file}
+\caption[The LOF caption]{Documenter opened on a Mondrian\footnotemark  documentation file}
 \figlabel{GtDocumenterMondrianExamplePictures}
 \end{figure}
+\footnotetext{\url{https://github.com/feenkcom/gtoolkit-visualizer}}
 
+\newpage
 And it can even embed live code that can be previewed in place:
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-expanded-examples.png}
-\caption{Visual logging of Animation with GT Transcript}
+\caption{Live preview of the example result within the Documenter}
 \figlabel{GtDocumenterMondrianExpandedExamples}
 \end{figure}
 
@@ -399,9 +406,34 @@ And it can even embed live code that can be previewed in place:
 \chapter {Conclusion and Future Work}
 In which we step back, have a critical look at the entire work, then conclude, and learn what lays beyond this thesis.
 
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------- A N L E I T U N G ------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
-This consists of additional documentation, e.g. a tutorial, user guide etc.
-Required by the Informatik regulation.
+
+The Moldable Editor is a part of Brick\footnote{\url{https://github.com/pharo-graphics/Brick}}, a widget library on top of \textit{Bloc}, new low level vector graphical framework for \textit{Pharo}.
+
+It can be installed in Pharo 6 or later by executing the following script in \textit{Playground}:
+\begin{lstlisting}[language=Smalltalk, caption={Brick installation script},captionpos=b, label={lst:BrickInstallationScript}]
+Metacello new
+    baseline: 'Brick';
+    repository: 'github://pharo-graphics/Brick/src';
+    load: #core
+\end{lstlisting}
+
+The applications of the Moldable Editor (Transcript, Connector and Documenter) are part of the Glamorous Toolkit (GT)\footnote{\url{https://github.com/feenkcom/gtoolkit}}, which is the second generation of GT\footnote{\url{http://gtoolkit.org/}} that is based on the Bloc project.
+
+It can be installed with the help of the following script:
+
+\begin{lstlisting}[language=Smalltalk, caption={GToolkit installation script},captionpos=b, label={lst:GToolkitInstallationScript}]
+Metacello new
+   baseline: 'GToolkit';
+   repository: 'github://feenkcom/gtoolkit/src';
+   load.
+\end{lstlisting}
+
+
 
 %END Doc
 %-------------------------------------------------------
