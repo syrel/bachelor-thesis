@@ -384,7 +384,6 @@ For example, Documenter can embed pictures right in place:
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-example-pictures.png}
-%\caption{Documenter opened on a Mondrian documentation file}
 \caption[The LOF caption]{Documenter opened on a Mondrian\footnotemark  documentation file}
 \figlabel{GtDocumenterMondrianExamplePictures}
 \end{figure}
@@ -404,8 +403,12 @@ And it can even embed live code that can be previewed in place:
 %--------------------------------------------------------------------------- C O N C L U S I O N ----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 \chapter {Conclusion and Future Work}
-In which we step back, have a critical look at the entire work, then conclude, and learn what lays beyond this thesis.
 
+This work only scratches a surface of what can be done with the editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. There is still a lot that should be done and we have to walk through a long path that lies in front of us. While the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which includes line numbers, clickable links or code critiques adornments.
+
+Nevertheless, this work proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
+
+One more application for this text editor would be code snippets \footnote{\url{http://scg.unibe.ch/wiki/projects/Snippets-GTPlayground}} that we consider a future work. The idea would be to create an interface that allows users to split a single playground script into multiple independent \textit{snippets} that can be executed and managed independently.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------- A N L E I T U N G ------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
