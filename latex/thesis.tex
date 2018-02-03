@@ -351,39 +351,50 @@ To get an idea of how this tool could be useful, take a look at the following ex
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
 \section{Connector}
 
 In the \ref{SyntaxHighlightingAndAdornments} section, we saw how examples dependencies can be expanded in place by utilising the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
 The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}.
 
-\begin{figure}[t]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.85\columnwidth]{images/gt-connector.png}
 \caption{GT Connector opened on an example method}
 \figlabel{GtConnector}
 \end{figure}
 
-\newpage
 However, it has two key differences:
 \begin{itemize}  
 \item the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
 \item the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
 \end{itemize}
 
-
-
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------- D O C U M E N T E R ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 \newpage
 \section{Documenter}
 
-The Documenter offers live rendering of Pillar\footnote{\url{https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html}} documents.
-For example, Documenter can embed pictures right in place:
+Documentation plays an important role during development process. Developers spend a sizeable amount of time on writing it, maintaining and evolving over time. Nowadays there exist techniques and automatisation processes that allow developers to create \textit{technical documentation} out of existing source code. Examples of such tools include Javadoc\footnote{\url{https://docs.oracle.com/javase/9/javadoc/javadoc.htm}}, Doxygen\footnote{\url{http://doxygen.org/}}, Visual Expert\footnote{\url{http://www.visual-expert.com/}}, to name a few. They help programmers to keep documentation up-to-date with almost no effort (\figref{Javadoc}). However, such documentation is too technical and may not satisfy all the needs of the users. Instead of browsing auto-generated documentation users of a library or a framework could benefit more from \textit{user documentation} such as tutorials, blog posts, thematics, guides or cheatsheets. One of the key-points of user documentation is an ability to mix plain text explanations with code snippets and some sort of a preview of the result of those code snippets, sometimes in a form of screenshots. That is where a problem of user documentation comes from; tutorials must be updated due to API changes or UI improvements that may lead to visible differences between screenshots and an actual output of the code snippets if they would be executed in a real environment. Additionally, tutorials are not meant to be testable in any automatic way, for example on CI servers. As a result it increases the cost of maintaining user documentation and may even have a negative impact if new users face issues or discrepancies in their expectations based on tutorial and real results.
+
+\begin{figure*}[h]
+\centering
+\subfloat[]{\includegraphics[width=0.48\textwidth]{images/javadoc-sourcecode.png}\figlabel{JavadocSourceCode}}\hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.48\textwidth]{images/javadoc-documentation.png}\figlabel{JavadocDocumentation}}\hspace{0.1cm}
+
+\caption{Two sides of Javadoc: \emph{a)} source code; \emph{b)} generated documentation}  
+\figlabel{Javadoc}
+\end{figure*}
+
+\newpage
+
+The goal of the Documenter is to reduce a cost of maintaining user documentation and make it easier for developers to write it.
+
+As a way to achieve it, the Documenter offers live rendering of Pillar\footnote{\url{https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html}} documents. For example, as shown on \figref{GtDocumenterMondrianExamplePictures} Documenter can embed pictures right in place.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-example-pictures.png}
+\includegraphics[width=0.95\columnwidth]{images/documenter-mondrian-example-pictures.png}
 \caption[The LOF caption]{Documenter opened on a Mondrian\footnotemark  documentation file}
 \figlabel{GtDocumenterMondrianExamplePictures}
 \end{figure}
@@ -394,7 +405,7 @@ And it can even embed live code that can be previewed in place:
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\columnwidth]{images/documenter-mondrian-expanded-examples.png}
+\includegraphics[width=0.95\columnwidth]{images/documenter-mondrian-expanded-examples.png}
 \caption{Live preview of the example result within the Documenter}
 \figlabel{GtDocumenterMondrianExpandedExamples}
 \end{figure}
