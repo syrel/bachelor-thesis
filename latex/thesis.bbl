@@ -1,13 +1,39 @@
 \begin{thebibliography}{1}
 
+\bibitem{boehm1995ropes}
+Hans-J Boehm, Russ Atkinson, and Michael Plass.
+\newblock Ropes: an alternative to strings.
+\newblock {\em Software: Practice and Experience}, 25(12):1315--1330, 1995.
+
 \bibitem{crowley1998data}
 Charles Crowley.
 \newblock Data structures for text sequences.
 \newblock {\em Computer Science Department, University of New Mexico, Date},
   pages 1--29, 1998.
 
+\bibitem{emacs2017}
+Inc. Free Software~Foundation.
+\newblock The buffer gap - gnu emacs lisp reference manual.
+\newblock
+  \url{https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-Gap.html#Buffer-Gap},
+  April 2017.
+
 \bibitem{atomblog2018}
 GitHub Inc.
-\newblock The state of atom's performance, 01 2018.
+\newblock The state of atom's performance.
+\newblock
+  \url{http://blog.atom.io/2018/01/10/the-state-of-atoms-performance.html},
+  January 2018.
+
+\bibitem{cairoText}
+Behdad~Esfahbod Keith~Packard, Carl~Worth.
+\newblock Cairo documentation - showglyphs.
+\newblock
+  \url{https://cairographics.org/manual/cairo-text.html#cairo-show-glyphs}.
+
+\bibitem{skiaText}
+Google Skia~Inc.
+\newblock Skia documentation - drawtext.
+\newblock \url{https://skia.org/user/api/SkCanvas_Reference#SkCanvas_drawText}.
 
 \end{thebibliography}

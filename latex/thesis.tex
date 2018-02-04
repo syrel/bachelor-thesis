@@ -80,7 +80,7 @@ The last but not least is a \ct{TextEditor} itself that provides high level text
 \figlabel{TextModelUml}
 \end{figure}
 
-In order to display and edit text, an editor requires a text model that provides text modification and enumeration api. In a context of text editor under \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of api methods to support text modifications such as \ct{insert:} or \ct{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing uses to iterate over all characters in a natural ordered way. Being indexable is also an essential property of a text model, since text stylers require text to have characters accessible by index. It is a consequence of a fact that code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals that are later used by a text styler to apply attributes on a piece of text defined by that integer intervals in a form of a \textit{[from, to]} tuple.
+In order to display and edit text, an editor requires a text model that provides text modification and enumeration api. In a context of text editor by \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of api methods to support text modifications such as \ct{insert:} or \ct{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing users to iterate over all characters in a natural ordered way. Being indexable is also an essential property of a text model, since text stylers require text to have characters accessible by index. It is a consequence of the fact that code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals that are later used by a text styler to apply attributes on a piece of text defined by that integer intervals in a form of a \textit{[from, to]} tuple.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %------------------------------------------------------------------ T E X T   D A T A   S T R U C T U R E S ------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -116,34 +116,116 @@ In Pharo there already exist two text models based on different data structures:
 
 \subsection{Atom}
 
-Atom text editor uses a memory-efficient data structure similar to a Piece Table.\cite{atomblog2018} Piece table is a memory efficient data structure based of two buffers, one of which represents original read-only text while the second one stores all modifications done to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. Piece table is considered to be the data structure of choice for a text editor. \cite{crowley1998data}
-
-\subsection{Emacs}
-
-TODO
+Atom\footnote{\url{https://atom.io/}} text editor uses a memory-efficient data structure similar to a Piece Table.\cite{atomblog2018} Piece table is a data structure based on two buffers, one of which represents original read-only text while the second one stores all modifications done to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. Piece table is considered to be the data structure of choice for a text editor. \cite{crowley1998data}
 
 \newpage
-\subsection{Rope}
+\subsection{Emacs}
+
+Emacs\footnote{\url{https://www.gnu.org/software/emacs/}} is based on a Gap Buffer, a data structure a little more complex as array but much more efficient \cite{crowley1998data}. The idea behind the gap buffer is simple, the whole text is stored in a large buffer that contains a gap at a cursor location or at a place where editing operations happen. Of course, this means that the gap must first be moved to the locus of the insertion or deletion. When the gap is correctly positioned editing operations are very efficient since the size of a buffer is small. However, the first editing command in one part of a large buffer, after previously editing in another far-away part, sometimes involves a noticeable delay. \cite{emacs2017} A delay happens because in order to move a gap the whole buffer that stores the text has to be reallocated and memory to be moved.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\columnwidth]{figures/rope-uml.pdf}
+\includegraphics[width=0.65\columnwidth]{figures/data-structure-gap-buffer.pdf}
+\caption{The gap buffer method}
+\figlabel{GapBufferText}
+\end{figure}
+
+\figref{GapBufferText} shows the workflow of an insertion operation with assumption that a gap buffer (white block) is already moved to the cursor location. 
+
+\subsection{Rope}
+
+An alternative to array or buffer based data structures is Rope. Rope is a tree of concatenation nodes representing character strings. \cite{boehm1995ropes} In addition to concatenation nodes, depending on implementation, rope may include subset nodes, reverse nodes or other custom types of nodes. Rope allows text editors to manipulate large pieces of text and makes text operations such as random access, insertion and deletion very efficient. However, in order to maintain high efficiency rope must be re-balanced otherwise it may loose its binary search tree properties and operations become inefficient.
+
+If all operations are implemented in a non-destructive way, rope becomes a persistent data structure. To enforce that, any modification should return a new node instance with applied changes. A root node of the returned rope, in this case, does not necessarily have the same type as the one that was modified. From text editor perspective, persistence makes it easier to implement undo/redo commands and helps to prevent multithreading issues when it comes to text styling.
+
+One of the main disadvantages of the Rope is its implementation complexity and high possibility of bugs as a consequence. Compared to other common text data structures, rope requires more memory space to store its tree structure. In languages without garbage collector, maintaining node references may be a tedious task and may lead to memory leaks.
+
+Due to its disadvantages, Rope didn't become a traditional and commonly used data structure to be used in text editors. For that reason it was not possible to see Rope in action, in a contrast to gap buffer or piece table that are nowadays used by modern and popular text editors. Its rare and complex nature, tree structure and possible object oriented implementation as also the existence of a garbage collector in Pharo made Rope a data structure of choice for the Moldable Editor.
+
+\subsubsection*{Collection node}
+One of the main building blocks of the Rope is a \textit{collection} node (\figref{RopeCollectionNode}). It is nothing else than a fixed buffer of characters of a limited length.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.80\columnwidth]{figures/data-structure-rope-collection.pdf}
+\caption{Collection node}
+\figlabel{RopeCollectionNode}
+\end{figure}
+If a total length of two collection nodes that are being merged exceeds a predefined limit, a result would be a \textit{concatenation} node consisting of those collection nodes.
+
+\subsubsection*{Concatenation node}
+
+\textit{Concatenation} node has a central role in the structure of the Rope. Similar to the binary search tree it knows its \textit{left} and \textit{right} child nodes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/data-structure-rope-concatenation.pdf}
+\caption{Concatenation node}
+\figlabel{RopeConcatenationNode}
+\end{figure}
+
+If a total length of two ropes being concatenated is lower then a predefined limit, then instead of creating a concatenation node, they can be merged into a single \textit{collection} node which allows Rope to be more memory-efficient and reduce amount of intermediate nodes.
+
+\newpage
+\subsubsection*{Subset node}
+
+An ability to get a substring defined by an index interval plays in important role for the text editor, for example in case of \textit{copy} or \textit{cut} commands. It can be implemented by introducing a \textit{subset} node that is a wrapper around other rope node with additional \ct{start} and \ct{end} attributes.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.80\columnwidth]{figures/data-structure-rope-subset.pdf}
+\caption{Subset node}
+\figlabel{RopeSubsetNode}
+\end{figure}
+
+\subsubsection*{Attribute node}
+
+As it is mentioned in section \ref{TextModelSection} \textit{Text} is not only a collection of characters but a set of associated attributes such as font size, text foreground or text style. Traditionally, attributes are stored in a separate data structure along a text sequence. For example \textit{Rubric} text model allocates a dedicated \textit{RunArray} of the same length as text itself, where every item is an array of attributes that correspond to the character with identical index as shown on \figref{RubricTextAttributesArray}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\columnwidth]{figures/text-attributes-array.pdf}
+\caption{Text attributes structure of the Rubric text model}
+\figlabel{RubricTextAttributesArray}
+\end{figure}
+
+Instead of creating a separate data structure for text attributes, it is possible to incorporate it directly inside of the rope hierarchy by introducing a new \textit{attribute} node. Attribute node is a wrapper around any rope node and it additionally stores a set of attributes that should be applied on that node as shown on \figref{RopeAttributeNode}. It makes it possible to apply attributes on the whole rope by only wrapping it in a single object, which consumes less space compared to traditional solutions as they have to allocate at least the same amount of memory as consumed by the text sequence.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/data-structure-rope-attribute.pdf}
+\caption{Attribute node}
+\figlabel{RopeAttributeNode}
+\end{figure}
+
+Additionally, attribute node makes it easier and more efficient to iterate over text \textit{spans}, pieces of text where all characters have the same attributes. This iteration is necessary during the rendering or text measurement process, where every span has to be rendered or measured separately, since underlying 2D graphics libraries only capable of rendering text sequences of the same pre-set style.\cite{skiaText}\cite{cairoText}
+
+%
+%\begin{figure*}[h]
+%\centering
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-1.png}\figlabel{RopeTree1}}\hspace{0.1cm}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-2.png}\figlabel{RopeTree2}}\hspace{0.1cm}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-3.png}\figlabel{RopeTree3}}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-4.png}\figlabel{RopeTree4}}\hspace{0.1cm}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-5.png}\figlabel{RopeTree5}}\hspace{0.1cm}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-6.png}\figlabel{RopeTree6}}
+%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-7.png}\figlabel{RopeTree7}}\hspace{0.1cm}
+%\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
+%\figlabel{RopeTree}
+%\end{figure*}
+
+\subsubsection*{Implementation}
+
+\figref{RopeUml} shows the class hierarchy of the rope nodes as it is implemented in the Moldable Editor.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\columnwidth]{figures/rope-uml.pdf}
 \caption{UML class diagram of the Rope hierarchy}
 \figlabel{RopeUml}
 \end{figure}
 
-\begin{figure*}[ht]
-\centering
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-1.png}\figlabel{RopeTree1}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-2.png}\figlabel{RopeTree2}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-3.png}\figlabel{RopeTree3}}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-4.png}\figlabel{RopeTree4}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-5.png}\figlabel{RopeTree5}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-6.png}\figlabel{RopeTree6}}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-7.png}\figlabel{RopeTree7}}\hspace{0.1cm}
-\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
-\figlabel{RopeTree}
-\end{figure*}
+
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------- T E X T   S T Y L E ------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -153,9 +235,12 @@ TODO
 
 Text styling and syntax highlighting play an important role in the editor and should be scalable and responsive. That is why, performing styling or syntax highlighting operations in a parallel thread is the only viable option. Unfortunately, it brings its own problems and difficulties such as thread safety and text synchronisation. One of the main problem is the fact that original text can be changed during styling process. Assume the code from the \lstref{NumberOdd} and imagine we would like to style \ct{false} keyword with a style corresponding to Smalltalk pseudo-variables.
 
-\begin{minipage}[t]{0.95\textwidth}
+\begin{minipage}[h]{0.95\textwidth}
 \begin{lstlisting}[language=Smalltalk, caption={Implementation of the \textit{\#odd} testing method from the \textit{Number} class},captionpos=b, label={lst:NumberOdd}]
-odd	"Answer whether the receiver is an odd number."	^self even == false
+odd
+	"Answer whether the receiver is an odd number."
+
+	^self even == false
 \end{lstlisting}
 \end{minipage}
 
@@ -163,20 +248,22 @@ An object responsible for styling of a source code is called \textit{syntax high
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\columnwidth]{images/number-odd-false-node.png}
+\includegraphics[width=0.8\columnwidth]{images/number-odd-false-node.png}
 \caption{AST node of the \textit{false} keyword and its interval in original source code}
 \figlabel{NumberOffFalseAstNode}
 \end{figure}
 
+\newpage
 One possible solution would be to implement a locking mechanism and allow only one thread to modify and access text at a time. However, it would make the overall implementation more complex and will affect performance in a negative way. Another solution is to create a copy of a text in the UI thread and let styler operate on that copy. This way text editor and styler threads do not share a text instance and can operate independently. The downside of that method is a need to create a copy of a text while blocking a UI thread during the copying process. Once styling is complete an original text should be replaced with a styled one on UI thread. However, if original text was modified during syntax highlighting we can not replace it with a styled copy and must discard it. \figref{EditorTextStylingSequence} gives a high level overview of how synchronisation problem is solved in the Moldable Editor.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\columnwidth]{figures/editor-text-styling.pdf}
+\includegraphics[width=0.82\columnwidth]{figures/editor-text-styling.pdf}
 \caption{UML Sequence diagram of the styling process}
 \figlabel{EditorTextStylingSequence}
 \end{figure}
 
+\newpage
 As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used in order to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that has been copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
 
 As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking editor's integrity. Then editor checks whether the original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is a case, the editor asks current text model to replace its content with the content of the styled one, otherwise a styled version is discarded. As a final step editor performs invalidation in order to update the on screen rendering to correspond a new text state.
@@ -189,7 +276,7 @@ As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates
 
 In order for the editor to be scalable it should be implemented in such a way that the overall performance is independent from the text size. A common technique to achieve it is to only process a part of the scene that is currently visible to the user. It means that we should not render and lay text out if it is outsize of the current viewport of the editor. Similar behaviour can be found in various graphical frameworks. A set of widgets that work only with visible elements includes for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android and others. Bloc \footnote{\url{https://github.com/pharo-graphics/Bloc}} graphical framework that is used as an underlying layer for the Moldable Editor contains such a widget, called \textit{InfiniteElement}, where \textit{infinite} stands for \textit{practically infinite} as it allows developers to create scrolling lists that are able to display large datasets. \figref{InfiniteList} shows a high level overview of the \textit{InfiniteElement's}scrolling behaviour. At any time only visible graphical elements are added to the composition tree. It allows text editor to render its content almost instantly and makes it possible to have smooth scrolling animation. When a viewport of the text editor is resized only a fraction of the overall text has to be remeasured and layered out.
 
-\begin{figure}[t]
+\begin{figure}[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{figures/infinite-list.pdf}
 \caption{Scrolling items in and out of viewport using \textit{InfiniteElement}}

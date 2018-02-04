@@ -6,14 +6,14 @@
 \contentsline {section}{\numberline {3.3}Text data structures}{6}{section.3.3}
 \contentsline {subsection}{\numberline {3.3.1}Pharo}{6}{subsection.3.3.1}
 \contentsline {subsection}{\numberline {3.3.2}Atom}{7}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}Emacs}{7}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.3}Emacs}{8}{subsection.3.3.3}
 \contentsline {subsection}{\numberline {3.3.4}Rope}{8}{subsection.3.3.4}
-\contentsline {section}{\numberline {3.4}Text style}{9}{section.3.4}
-\contentsline {section}{\numberline {3.5}Segments and Rendering}{12}{section.3.5}
-\contentsline {chapter}{\numberline {4}The Validation}{15}{chapter.4}
-\contentsline {section}{\numberline {4.1}Overview}{15}{section.4.1}
-\contentsline {section}{\numberline {4.2}Transcript}{17}{section.4.2}
-\contentsline {section}{\numberline {4.3}Connector}{21}{section.4.3}
-\contentsline {section}{\numberline {4.4}Documenter}{22}{section.4.4}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{25}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{26}{chapter.6}
+\contentsline {section}{\numberline {3.4}Text style}{12}{section.3.4}
+\contentsline {section}{\numberline {3.5}Segments and Rendering}{14}{section.3.5}
+\contentsline {chapter}{\numberline {4}The Validation}{17}{chapter.4}
+\contentsline {section}{\numberline {4.1}Overview}{17}{section.4.1}
+\contentsline {section}{\numberline {4.2}Transcript}{19}{section.4.2}
+\contentsline {section}{\numberline {4.3}Connector}{23}{section.4.3}
+\contentsline {section}{\numberline {4.4}Documenter}{24}{section.4.4}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{27}{chapter.5}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{28}{chapter.6}
