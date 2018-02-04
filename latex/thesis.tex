@@ -278,7 +278,7 @@ In order for the editor to be scalable it should be implemented in such a way th
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=1.0\columnwidth]{figures/infinite-list.pdf}
+\includegraphics[width=0.75\columnwidth]{figures/infinite-list.pdf}
 \caption{Scrolling items in and out of viewport using \textit{InfiniteElement}}
 \figlabel{InfiniteList}
 \end{figure}
@@ -287,10 +287,14 @@ However, the described approach has its own limitation. In order for the \textit
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=1.0\columnwidth]{figures/text-model-segments.pdf}
+\includegraphics[width=0.85\columnwidth]{figures/text-model-segments.pdf}
 \caption{Segments}
 \figlabel{TextModelSegments}
 \end{figure}
+
+\newpage
+
+Once segments are constructed, the editor creates visual elements in order represent those segments. \figref{RenderingElementsMapping} shows how an editor element, opened on a two-line text, is composed. Every line is encapsulated into a segment and is rendered as \ct{TextEditorSegment}. Each segment is then split into pieces, in our case words. Finally, every word is rendered as \ct{RenderingElementsMapping}. A cursor is also a visual element and is contained by a word element which happens to have a focus. 
 
 \begin{figure}[t]
 \centering
