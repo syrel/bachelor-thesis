@@ -36,4 +36,9 @@ Google Skia~Inc.
 \newblock Skia documentation - drawtext.
 \newblock \url{https://skia.org/user/api/SkCanvas_Reference#SkCanvas_drawText}.
 
+\bibitem{SUFRIN1982157}
+Bernard Sufrin.
+\newblock Formal specification of a display-oriented text editor.
+\newblock {\em Science of Computer Programming}, 1(3):157 -- 202, 1982.
+
 \end{thebibliography}

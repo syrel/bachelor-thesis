@@ -26,13 +26,25 @@ It has come to our attention that often ideas are generated in other contexts be
 \chapter{Introduction}
 \label{cha:introduction}
 
+Almost all programming languages are purely textual and developers spend most of their time reading and writing code. It makes text editors an important tool in software development. They also happen to be a central IDE tool used by programmers to edit code.
+
+Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable} and should allow users to augment code with any graphical components and not only predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
+
+\bigskip
+The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object - a visual element, hence removing a conceptual gap between text and widgets within the editor.
+
+\newpage
 We already know that when it comes to a general user interface and widgets in particular, it is possible to have a single composition tree of visual elements. Because of that, developers are able to implement a wide variety of flexible graphical components. Nevertheless, nowadays most text editors happen to be a leaf in that composition hierarchy, thus playing a role of an end point. Those text editors do not allow developers to easily integrate arbitrary visual components within a text therefore forcing programmers to treat a text, and visual elements differently.
 
-The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object - a visual element, hence removing a conceptual gap between text and widgets within the editor. As Alan Kay said, "objects all the way down", while in our case, graphical components all the way down.
+In the first part, we explain in more detail how the editor is implemented and describe a rope data structure behind a text model. Additionally, we introduce a way of storing text attributes and underlying text sequence in the same data structure, and we show how it simplifies the way existing attributes are expanded on a new inserted text.
 
-In the first part, we discuss a few applications of such an editor in order to show how a single composition tree makes that editor extremely flexible, and what it could mean to have it in a live programming environment. In the second part, we explain in more detail how the editor is implemented and describe a rope data structure behind a text model. Additionally, we introduce a novel way of storing text attributes and underlying characters in the same data structure, and we show how it simplifies the way existing attributes are expanded on a new inserted text. In a conclusion we present a few directions in which the editor could evolve. We also discuss possible use-cases and more applications of the editor in a context of a live programming environment such as debugger, inspector or live code snippets.
+In the second part, we discuss a few applications of such an editor in order to show how a single composition tree makes that editor flexible, and what it could mean to have it in a live programming environment.
+
+In the conclusion we present a few directions in which the editor could evolve. We also discuss possible use-cases and more applications of the editor in a context of a live programming environment such as debugger, inspector or live code snippets.
 
 \chapter {Related Work}
+
+Since one of the first formal description of a text editor in the early 1980s \cite{SUFRIN1982157} there exist a plethora of work on text editors.
 
 An ability to embed pictures or other graphical components is not new and can be found in various text editors. One interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} that combines live code, visualisations and explanatory text to create documents. Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors. For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor.
 
