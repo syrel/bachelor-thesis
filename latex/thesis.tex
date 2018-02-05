@@ -9,11 +9,12 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \chapter*{\centering Abstract}
 \begin{quotation}
-\noindent 
-It has come to our attention that often ideas are generated in other contexts beyond Java. In this work we show how they can be automatically generated in a statically typed language.
+\noindent
+
+We present a scalable and moldable text editor that is modelled as a single composition tree of visual elements. It allows us to mix text and graphical components in a transparent way and threat them uniformly. As a result we are able to augment code with view by using special \textit{adornment} attributes that are applied on a text by stylers as part of the syntax highlighting process. We validate the model by implementing a code editor capable of manipulating large pieces of text; the Transcript, a logging tool being able to display non-textual messages; the Connector, an example dependencies browser and the Documenter, an interactive and live editor of Pillar markup documents.
+
 \end{quotation}
 \clearpage
-
 
 % C O N T E N T S 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -30,14 +31,19 @@ It has come to our attention that often ideas are generated in other contexts be
 
 Almost all programming languages are purely textual and developers spend most of their time reading and writing code. It makes text editors an important tool in software development. They also happen to be a central IDE tool used by programmers to edit code.
 
-Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable}\cite{Chis16d} and should allow users to augment code with any graphical components and not only predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
+Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable}\cite{Chis16d} and should allow users to augment code with any graphical components easily going beyond the predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
 
-\bigskip
+\begin{quotation}
+\noindent 
 The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object - a visual element, hence removing a conceptual gap between text and widgets within the editor.
+\end{quotation}
 
 \newpage
 We already know that when it comes to a general user interface and widgets in particular, it is possible to have a single composition tree of visual elements. Because of that, developers are able to implement a wide variety of flexible graphical components. Nevertheless, nowadays most text editors happen to be a leaf in that composition hierarchy, thus playing a role of an end point. Those text editors do not allow developers to easily integrate arbitrary visual components within a text therefore forcing programmers to treat a text, and visual elements differently.
 
+During development, it is not unusual to have to manipulate large text files, such as for configurations or logs. To this end, an important requirement for a practical text editor is to be scalable.
+
+\bigskip
 In the first part, we explain in more detail how the editor is implemented and describe a rope data structure behind a text model. Additionally, we introduce a way of storing text attributes and underlying text sequence in the same data structure, and we show how it simplifies the way existing attributes are expanded on a new inserted text.
 
 In the second part, we discuss a few applications of such an editor in order to show how a single composition tree makes that editor flexible, and what it could mean to have it in a live programming environment.
@@ -101,11 +107,9 @@ One of the requirements for the editor was an ability to embed visual components
 
 The basis and foundation of the editor is a text model. One of the interesting aspects of that text model is the fact that it is data structure independent. It also allows us to implement different types of text models, for example \ct{SubText}, that can scope existing text model within a character interval, or \ct{SpanText}, that represents a uniform piece of text where every character has the same attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \ct{Text} api. More about text model can be found in the section \ref{TextModelSection}.
 
-When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model api or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such text parsing and styling should happen in a parallel background thread. While being easy to explain it is in fact a non-trivial task, since users are able to perform text modification operations while styler applies attributes on that text being modified. In the \ref{TextStyleSection} section we will talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
+When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model api or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such text parsing and styling should happen in a parallel background thread. It is in fact a non-trivial task, since users are able to perform text modification operations while styler applies attributes on a text that is being modified. In the \ref{TextStyleSection} section we talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
 
-In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are hold by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part will be explained in more details in the \ref{SegmentsAndRenderingSection} section.
-
-The last but not least is a \ct{TextEditor} itself that provides high level text modification api and allows developers to specify shortcuts.
+In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are held by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part is explained in more details in the \ref{SegmentsAndRenderingSection} section.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------- T E X T   M O D E L ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -124,7 +128,7 @@ In order to display and edit text, an editor requires a text model that provides
 %------------------------------------------------------------------ T E X T   D A T A   S T R U C T U R E S ------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Text data structures}
 
-One of the main requirements for the moldable editor is an ability to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. While looking for a data structure that would fit the needs of the moldable editor we found out that there is no the best data structure that is the only choice. It turned out that depending on a context and the way a text editor will be used it may be important to be able to select one or another data structure. Not to mention is the fact that text data structure should be chosen during early development stages, before the editor becomes usable. That is why the text model of the moldable editor is data structure independent and only defines a public api. In order for it to be used by a text editor developers should create concrete implementations of that api with the data structure of choice as a backend. In the following sub-sections we will look at different data structures being used by text editors and compare them.
+To be considered scalable the moldable editor should be able to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. While looking for a data structure that would fit the needs of the moldable editor we found out that there is no the best data structure that is the only choice. It turned out that depending on a context and the way a text editor will be used it may be important to be able to select one or another data structure. Not to mention is the fact that text data structure should be chosen during early development stages, before the editor becomes usable. That is why the text model of the moldable editor is data structure independent and only defines a public api. In order for it to be used by a text editor developers should create concrete implementations of that api with the data structure of choice as a backend. In the following sub-sections we will look at different data structures being used by text editors and compare them.
 
 \subsection{Pharo}
 
@@ -356,13 +360,13 @@ Once segments are constructed, the editor creates visual elements in order repre
 
 \subsection*{Scalability}
 
-The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 2MB of text, and yet it opens smoothly (\figref{MoldableEditor2MB}).
+The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 100MB of text, and yet it opens smoothly (\figref{MoldableEditor100MB}).
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.65\columnwidth]{images/moldable-editor-scalable.png}
-\caption{The Moldable Editor opened on a 2MB text}
-\figlabel{MoldableEditor2MB}
+\caption{The Moldable Editor opened on a 100MB text}
+\figlabel{MoldableEditor100MB}
 \end{figure}
 
 \newpage
