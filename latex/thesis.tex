@@ -20,15 +20,17 @@ It has come to our attention that often ideas are generated in other contexts be
 \tableofcontents
 
 \mainmatter
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% NEW CHAPTER %%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%===================================================================================================
+%===================================================================================================
+%======================================= I N T R O D U C T I O N =========================================
+%===================================================================================================
+%===================================================================================================
 \chapter{Introduction}
 \label{cha:introduction}
 
 Almost all programming languages are purely textual and developers spend most of their time reading and writing code. It makes text editors an important tool in software development. They also happen to be a central IDE tool used by programmers to edit code.
 
-Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable} and should allow users to augment code with any graphical components and not only predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
+Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable}\cite{Chis16d} and should allow users to augment code with any graphical components and not only predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
 
 \bigskip
 The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object - a visual element, hence removing a conceptual gap between text and widgets within the editor.
@@ -42,21 +44,45 @@ In the second part, we discuss a few applications of such an editor in order to 
 
 In the conclusion we present a few directions in which the editor could evolve. We also discuss possible use-cases and more applications of the editor in a context of a live programming environment such as debugger, inspector or live code snippets.
 
+%===================================================================================================
+%===================================================================================================
+%======================================  R E L A T E D   W O R K  ========================================
+%===================================================================================================
+%===================================================================================================
+
 \chapter {Related Work}
 
 Since one of the first formal description of a text editor in the early 1980s \cite{SUFRIN1982157} there exist a plethora of work on text editors.
 
-An ability to embed pictures or other graphical components is not new and can be found in various text editors. One interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} that combines live code, visualisations and explanatory text to create documents. Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors. For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor.
+An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects ~\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors.
 
 \begin{figure*}[h]
 \centering
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/jupyterpreview.png}\figlabel{JupyterPreview}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/domain-specific-languages.png}\figlabel{MpsPreview}}\hspace{0.1cm}
-\subfloat[]{\includegraphics[width=0.32\textwidth]{images/envisionpreview.png}\figlabel{EnvisionPreview}}
-\caption{Examples of the editors combining code and graphical views: \emph{a)} Jupyter Notebook; \emph{b)} Jetbrains MPS; \emph{c)} Envision.}  
+\subfloat[]{\includegraphics[width=0.48\textwidth]{images/domain-specific-languages.png}\figlabel{MpsPreview}} \hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.48\textwidth]{images/envisionpreview.png}\figlabel{EnvisionPreview}}\hspace{0.1cm}
+\caption{Examples of the editors combining code and graphical views: \emph{a)} Jetbrains MPS; \emph{b)} Envision.}  
 \figlabel{RelatedEditors}
 \end{figure*}
 
+\newpage
+An interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} that combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
+
+For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\columnwidth]{images/jupyterpreview.png}
+\caption{Jupyter Notebook}
+\figlabel{JupyterPreview}
+\end{figure}
+
+Playgrounds, like Swift\footnote{\url{https://developer.apple.com/swift/playgrounds}}, Scala\footnote{\url{https://github.com/scala-ide/scala-worksheet/wiki/Getting-Started}} or Eve\footnote{\url{http://witheve.com}}, give live and continuous feedback of a computation by adding graphical views next to the code. Many IDEs, when in the debugger, link the code editor with run-time objects (\eg Eclipse, IntelliJ, VisualStudio), and display views in pop-ups. IDEs like Pharo\footnote{\url{http://pharo.org}} or Squeak\footnote{\url{http://squeak.org}}, embed the code editor into the object inspector. Another category of systems provide complete graphical editors. This includes, for example, modelling frameworks, like EMF\footnote{\url{https://eclipse.org/modeling/emf/}} or VPL\footnote{\url{https://msdn.microsoft.com/en-us/library/bb483088.aspx}}, or visual languages~\cite{Citr95}.
+
+%===================================================================================================
+%===================================================================================================
+%=========================================  T H E  E D I T O R   ==========================================
+%===================================================================================================
+%===================================================================================================
 
 \chapter {The Moldable Editor}
 
@@ -463,7 +489,7 @@ To get an idea of how this tool could be useful, take a look at the following ex
 \section{Connector}
 
 In the \ref{SyntaxHighlightingAndAdornments} section, we saw how examples dependencies can be expanded in place by utilising the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
-The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}.
+The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}\cite{Brag10a}.
 
 \begin{figure}[h]
 \centering

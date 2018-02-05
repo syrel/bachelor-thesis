@@ -1,9 +1,44 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{Asen14}
+Dimitar Asenov and Peter M{\"{u}}ller.
+\newblock Envision: {A} fast and flexible visual code editor with fluid
+  interactions (overview).
+\newblock In {\em {IEEE} Symposium on Visual Languages and Human-Centric
+  Computing, {VL/HCC} 2014, Melbourne, VIC, Australia, July 28 - August 1,
+  2014}, pages 9--12, 2014.
 
 \bibitem{boehm1995ropes}
 Hans-J Boehm, Russ Atkinson, and Michael Plass.
 \newblock Ropes: an alternative to strings.
 \newblock {\em Software: Practice and Experience}, 25(12):1315--1330, 1995.
+
+\bibitem{Bosh97a}
+Marat Boshernitsan and Michael Downes.
+\newblock Visual programming languages: A survey.
+\newblock Technical Report Report No. UCB/CSD-04-1368, University of
+  California, Berkeley, December 1997.
+
+\bibitem{Brag10a}
+Andrew Bragdon, Robert Zeleznik, Steven~P. Reiss, Suman Karumuri, William
+  Cheung, Joshua Kaplan, Christopher Coleman, Ferdi Adeputra, and Joseph~J.
+  LaViola, Jr.
+\newblock Code bubbles: a working set-based interface for code understanding
+  and maintenance.
+\newblock In {\em CHI '10: Proceedings of the 28th international conference on
+  Human factors in computing systems}, pages 2503--2512, New York, NY, USA,
+  2010. ACM.
+
+\bibitem{Chis16d}
+Andrei Chi\c{s}.
+\newblock {\em Moldable Tools}.
+\newblock {PhD} thesis, University of Bern, September 2016.
+
+\bibitem{Citr95}
+Wayne Citrin, Michael Doherty, and Benjamin Zorn.
+\newblock Visual object-oriented programming.
+\newblock chapter The Design of Completely Visual OOP Language, pages 67--93.
+  Manning Publications Co., Greenwich, CT, USA, 1995.
 
 \bibitem{crowley1998data}
 Charles Crowley.
@@ -25,11 +60,42 @@ GitHub Inc.
   \url{http://blog.atom.io/2018/01/10/the-state-of-atoms-performance.html},
   January 2018.
 
+\bibitem{Inga88a}
+Dan Ingalls.
+\newblock Fabrik: A visual programming environment.
+\newblock In {\em Proceedings OOPSLA '88, ACM SIGPLAN Notices}, volume~23,
+  pages 176--190, November 1988.
+
 \bibitem{cairoText}
 Behdad~Esfahbod Keith~Packard, Carl~Worth.
 \newblock Cairo documentation - showglyphs.
 \newblock
   \url{https://cairographics.org/manual/cairo-text.html#cairo-show-glyphs}.
+
+\bibitem{Ko06b}
+Andrew~J. Ko and Brad~A. Myers.
+\newblock Barista: An implementation framework for enabling new tools,
+  interaction techniques and views in code editors.
+\newblock In {\em Proceedings of the SIGCHI Conference on Human Factors in
+  Computing Systems}, CHI '06, pages 387--396, New York, NY, USA, 2006. ACM.
+
+\bibitem{Malo10}
+John Maloney, Mitchel Resnick, Natalie Rusk, Brian Silverman, and Evelyn
+  Eastmond.
+\newblock The scratch programming language and environment.
+\newblock {\em Trans. Comput. Educ.}, 10(4):16:1--16:15, November 2010.
+
+\bibitem{McDi13a}
+Sean McDirmid.
+\newblock Usable live programming.
+\newblock In {\em Proceedings of the 2013 ACM International Symposium on New
+  Ideas, New Paradigms, and Reflections on Programming \& Software}, Onward!
+  2013, pages 53--62, New York, NY, USA, 2013. ACM.
+
+\bibitem{Pere07}
+F.~Perez and B.~E. Granger.
+\newblock Ipython: A system for interactive scientific computing.
+\newblock {\em Computing in Science Engineering}, 9(3):21--29, May 2007.
 
 \bibitem{skiaText}
 Google Skia~Inc.
@@ -40,5 +106,14 @@ Google Skia~Inc.
 Bernard Sufrin.
 \newblock Formal specification of a display-oriented text editor.
 \newblock {\em Science of Computer Programming}, 1(3):157 -- 202, 1982.
+
+\bibitem{Voel16a}
+Markus Voelter, Tam\'{a}s Szab\'{o}, Sascha Lisson, Bernd Kolb, Sebastian
+  Erdweg, and Thorsten Berger.
+\newblock Efficient development of consistent projectional editors using
+  grammar cells.
+\newblock In {\em Proceedings of the 2016 ACM SIGPLAN International Conference
+  on Software Language Engineering}, SLE 2016, pages 28--40, New York, NY, USA,
+  2016. ACM.
 
 \end{thebibliography}
