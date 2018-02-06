@@ -60,7 +60,7 @@ In the conclusion we present a few directions in which the editor could evolve. 
 
 Since one of the first formal description of a text editor in the early 1980s \cite{SUFRIN1982157} there exist a plethora of work on text editors.
 
-An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects ~\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors.
+An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects ~\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors (\figref{RelatedEditors} \emph{(a)}).
 
 \begin{figure*}[h]
 \centering
@@ -73,7 +73,7 @@ An ability to embed pictures or other graphical components is not new and can be
 \newpage
 An interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} that combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
 
-For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor.
+For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor (\figref{RelatedEditors} \emph{(b)}).
 
 \begin{figure}[t]
 \centering
@@ -307,7 +307,7 @@ One possible solution would be to implement a locking mechanism and allow only o
 \end{figure}
 
 \newpage
-As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that has been copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
+As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that was copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
 
 As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking editor's integrity. Then editor checks whether the original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is a case, the editor asks current text model to replace its content with the content of the styled one, otherwise a styled version is discarded. As a final step editor performs invalidation to update the on screen rendering to correspond a new text state.
 
@@ -337,7 +337,7 @@ However, the described approach has its own limitation. In order for the \textit
 
 \newpage
 
-Once segments are constructed, the editor creates visual elements to represent those segments. \figref{RenderingElementsMapping} shows how an editor element, opened on a two-line text, is composed. Every line is encapsulated into a segment and is rendered as \ct{TextEditorSegment}. Each segment is then split into pieces, in our case words. Finally, every word is rendered as \ct{RenderingElementsMapping}. A cursor is also a visual element and is contained by a word element which happens to have a focus. 
+Once segments are constructed, the editor creates visual elements to represent those segments. \figref{RenderingElementsMapping} shows how an editor element, opened on a two-line text, is composed. Every line is encapsulated into a segment and is rendered as \ct{TextEditorSegment.} Each segment is then split into pieces, in our case words. Finally, every word is rendered as \ct{RenderingElementsMapping.} A cursor is also a visual element and is contained by a word element which happens to have a focus. 
 
 \begin{figure}[t]
 \centering
@@ -424,7 +424,6 @@ The goal of GT Transcript is to offer a rich and interactive interface for displ
 
 The API is backward compatible with the existing transcript. To enable the new features, we introduced a builder. For example, \ct{transcript nextPutAll: 'something'} becomes \ct{transcript next putAll: 'something'}. Between \textit{next} and \textit{putAll:}, we can add multiple attributes to the text output.
 
-
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.65\columnwidth]{images/gt-transcript-complete-api.png}
@@ -502,7 +501,7 @@ To implement GT Transcript there were no changes made to the underlying editor m
 \newpage
 \section{Connector}
 
-In Section \ref{SyntaxHighlightingAndAdornments}, we saw how examples dependencies can be expanded in place by using the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
+In Section \ref{SyntaxHighlightingAndAdornments}, we saw how example dependencies can be expanded in place by using the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
 The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}\cite{Brag10a}.
 
 \begin{figure}[h]
@@ -558,6 +557,7 @@ And it can even embed live code that can be previewed in place:
 \figlabel{GtDocumenterMondrianExpandedExamples}
 \end{figure}
 
+As shown on the \figref{GtDocumenterMondrianExpandedExamples} the Documenter facilitates an ability of the editor to mix visual components with text, in this case by recursively composing editors with each other in order to expand example's dependencies. It only becomes possible if we remove any constraints and enforce editor to treat all contained graphical components uniformly.
 
 %===================================================================================================
 %===================================================================================================

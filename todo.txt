@@ -1,19 +1,2 @@
-Normally all your figures should be referenced from the text. 
-
-
 "o traditional solutions as they have to allocate at least the same amount of memory as consumed by the text sequence.“
 are you sure because runArray are done to allocate less when there are repetition.
-
- 
-"because a copy simply refers to the same rope instance as a text that has been copied."
-this should be explained because this is really an important point of the rope design
- 
-"egment .” -> use xspace in your macro :) 
-
-
-"w editor for an example and to automatically “ strange english
-
-"Documenter can embed pictures right in place.”
-but this is more rendering a script?
-
-Figure 4.10 should be explained. No idea what you are showing.
