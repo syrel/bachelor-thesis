@@ -1,2 +1,1 @@
-"o traditional solutions as they have to allocate at least the same amount of memory as consumed by the text sequence.“
-are you sure because runArray are done to allocate less when there are repetition.
+update conclusion

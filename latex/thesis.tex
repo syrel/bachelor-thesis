@@ -214,23 +214,28 @@ An ability to get a substring defined by an index interval plays in important ro
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.80\columnwidth]{figures/data-structure-rope-subset.pdf}
+\includegraphics[width=0.60\columnwidth]{figures/data-structure-rope-subset.pdf}
 \caption{Subset node}
 \figlabel{RopeSubsetNode}
 \end{figure}
 
 \subsubsection*{Attribute node}
 
-As it is mentioned in Section \ref{TextModelSection} \textit{Text} is not only a collection of characters but a set of associated attributes such as font size, text foreground or text style. Traditionally, attributes are stored in a separate data structure along a text sequence. For example \textit{Rubric} text model allocates a dedicated \textit{RunArray} of the same length as text itself, where every item is an array of attributes that corresponds to the character with identical index as shown on \figref{RubricTextAttributesArray}.
+As it is mentioned in Section \ref{TextModelSection} \textit{Text} is not only a collection of characters but a set of associated attributes such as font size, text foreground or text style. Traditionally, attributes are stored in a separate data structure along a text sequence. For example \textit{Rubric} text model allocates a dedicated \textit{RunArray} of the same length as text itself, where every item is an array of attributes that corresponds to the character with identical index as shown on \figref{RubricTextAttributesArray}. However, according to \textit{RunArray's} class comment in \textit{Pharo} its internal implementation is space-efficient:
+
+\begin{displayquote}
+My (note: RunArray) instances provide space-efficient storage of data which tends to be constant over long runs of the possible indices. Essentially repeated values are stored singly and then associated with a "run" length that denotes the number of consecutive occurrences of the value.
+\end{displayquote}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\columnwidth]{figures/text-attributes-array.pdf}
+\includegraphics[width=0.45\columnwidth]{figures/text-attributes-array.pdf}
 \caption{Text attributes structure of the Rubric text model}
 \figlabel{RubricTextAttributesArray}
 \end{figure}
 
-Instead of creating a separate data structure for text attributes, it is possible to incorporate it directly inside of the rope hierarchy by introducing a new \textit{attribute} node. Attribute node is a wrapper around any rope node and it additionally stores a set of attributes that should be applied on that node as shown on \figref{RopeAttributeNode}. It makes it possible to apply attributes on the whole rope by only wrapping it in a single object, which consumes less space compared to traditional solutions as they have to allocate at least the same amount of memory as consumed by the text sequence.
+\newpage
+Instead of creating a separate data structure for text attributes, it is possible to incorporate it directly inside of the rope hierarchy by introducing a new \textit{attribute} node. Attribute node is a wrapper around any rope node and it additionally stores a set of attributes that should be applied on that node as shown on \figref{RopeAttributeNode}. It makes it possible to apply attributes on the whole rope by only wrapping it in a single object. Interestingly, since \textit{attribute} node does not operate with text intervals, as opposed to \textit{RunArray}, there is no need to update those intervals when new text is inserted, as they get automatically expanded and applied on a new character sequence.
 
 \begin{figure}[h]
 \centering
@@ -261,7 +266,7 @@ Additionally, attribute node makes it easier and more efficient to iterate over 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\columnwidth]{figures/rope-uml.pdf}
+\includegraphics[width=0.75\columnwidth]{figures/rope-uml.pdf}
 \caption{UML class diagram of the Rope hierarchy}
 \figlabel{RopeUml}
 \end{figure}
