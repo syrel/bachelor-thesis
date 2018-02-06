@@ -2,24 +2,14 @@ Normally all your figures should be referenced from the text.
 
 
 "o traditional solutions as they have to allocate at least the same amount of memory as consumed by the text sequence.“
-are you sure because runArray are done to allocate less when there are repetition. 
+are you sure because runArray are done to allocate less when there are repetition.
 
-"An object responsible for styling of a source code is called syntax highlighter and is nothing else than a visitor of the abstract syntax tree (AST) of that source code."
-
-Does not have to be implemented that way. 
  
 "because a copy simply refers to the same rope instance as a text that has been copied."
 this should be explained because this is really an important point of the rope design
  
 "egment .” -> use xspace in your macro :) 
 
-The section 4.2 on transcript is unconclusive
-
-"The goal of GT Transcript is to offer a rich and interactive interface for displaying live information coming from a system.”
-Ok so what
-
-Fig 4.6 is not self explanable
-Why the rectangle grows why the ball falls down?
 
 "w editor for an example and to automatically “ strange english
 

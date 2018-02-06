@@ -11,7 +11,7 @@
 \begin{quotation}
 \noindent
 
-We present a scalable and moldable text editor that is modelled as a single composition tree of visual elements. It allows us to mix text and graphical components in a transparent way and treat them uniformly. As a result we are able to augment code with view by using special \textit{adornment} attributes that are applied on a text by stylers as part of the syntax highlighting process. We validate the model by implementing a code editor capable of manipulating large pieces of text; the Transcript, a logging tool being able to display non-textual messages; the Connector, an example dependencies browser and the Documenter, an interactive and live editor of Pillar markup documents.
+We present a scalable and moldable text editor modelled as a single composition tree of visual elements. It allows us to mix text and graphical components in a transparent way and treat them uniformly. As a result we are able to augment code with views by using special \textit{adornment} attributes that are applied on text by stylers as part of the syntax highlighting process. We validate the model by implementing a code editor capable of manipulating large pieces of text; the Transcript, a logging tool being able to display non-textual messages; the Connector, an example dependencies browser and the Documenter, an interactive and live editor of Pillar markup documents.
 
 \end{quotation}
 \clearpage
@@ -285,7 +285,7 @@ odd
 \end{lstlisting}
 \end{minipage}
 
-An object responsible for styling of a source code is called \textit{syntax highlighter} and is nothing else than a visitor of the abstract syntax tree (AST) of that source code. Leaf AST nodes know their \ct{start} and sometimes \ct{stop} positions (\figref{NumberOffFalseAstNode}) within original source code. They can be used by a syntax highlighter to apply text attributes on a text within \textit{Interval}  of that node. In our example that node interval equals to \ct{(70 to: 74)}. The problem can occur if code gets changed after computation of its AST but right before attributes are applied on the text. For example if a user would delete any character from a source code, an interval \ct{(70 to:  74)} would be no more valid, because an overall length of that source code is 73 which leads to \ct{SubscriptOutOfBounds} exception.
+An object responsible for styling of a source code is called \textit{syntax highlighter}. It can be implemented as a visitor of the abstract syntax tree (AST) of that source code. Leaf AST nodes know their \ct{start} and sometimes \ct{stop} positions (\figref{NumberOffFalseAstNode}) within original source code. They can be used by a syntax highlighter to apply text attributes on a text within \textit{Interval}  of that node. In our example that node interval equals to \ct{(70 to: 74)}. The problem can occur if code gets changed after computation of its AST but right before attributes are applied on the text. For example if a user would delete any character from a source code, an interval \ct{(70 to:  74)} would be no more valid, because an overall length of that source code is 73 which leads to \ct{SubscriptOutOfBounds} exception.
 
 \begin{figure}[h]
 \centering
@@ -479,21 +479,30 @@ transcript next
 
 \newpage
 \subsection*{Logging an animation}
-To get an idea of how this tool can be useful, take a look at the following example on the \figref{GtTranscriptAnimation}. A Bloc animation is logged in a visual, domain centric way, providing insight far superior to plain text.
+
+When working on animations it is important to be able to debug them. Developers may find themselves in a situation where debugger is not helpful since it stops an animation process and only lets programmers to browse a frozen state. A different approach would be to observe how animation progresses over time. Traditionally, developers would insert logging statements and output changing parameters. However, textual representation may be a limited source of information. Instead, we propose to use GT Transcript, for visual logging of animation providing insight far superior to plain text.
+
+To get an idea of how this tool can be useful, take a look at the following example on the \figref{GtTranscriptAnimation}:
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\columnwidth]{images/gt-transcript-animation.png}
+\includegraphics[width=0.8\columnwidth]{images/gt-transcript-animation.png}
 \caption{Visual logging of Animation with GT Transcript}
 \figlabel{GtTranscriptAnimation}
 \end{figure}
+
+There we have a rectangle element with a white circle element as its direct child. Once element is constructed we apply a composite Bloc animation that consists of scale transformation, color transition. Additionally, we apply translation animation on the circle. During the animation multiple parameters get changed which makes textual logging a tedious task. However, instead of text users could directly log visual elements, which appear as image snapshots in the Transcript.
+
+\bigskip
+
+To implement GT Transcript there were no changes made to the underlying editor model and all additional functionality was easily integrated which indicates editor's flexibility. In the following sections we continue to validate the Moldable Editor by putting it in more different contexts.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \newpage
 \section{Connector}
 
-In Section \ref{SyntaxHighlightingAndAdornments}, we saw how examples dependencies can be expanded in place by using the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows the user to expand a new editor for an example and to automatically connect editor elements with one another.
+In Section \ref{SyntaxHighlightingAndAdornments}, we saw how examples dependencies can be expanded in place by using the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
 The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}\cite{Brag10a}.
 
 \begin{figure}[h]
