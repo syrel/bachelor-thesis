@@ -39,7 +39,7 @@ The goal of this work is to show how a text editor can be represented in the sam
 \end{quotation}
 
 \newpage
-We already know that when it comes to a general user interface and widgets in particular, it is possible to have a single composition tree of visual elements. Because of that, developers are able to implement a wide variety of flexible graphical components. Nevertheless, nowadays most text editors happen to be a leaf in that composition hierarchy, thus playing a role of an end point. Those text editors do not allow developers to easily integrate arbitrary visual components within a text therefore forcing programmers to treat a text, and visual elements differently.
+We already know that when it comes to a general user interface and widgets in particular, it is possible to have a single composition tree of visual elements. Because of that, developers are able to implement a wide variety of flexible graphical components. Nevertheless, nowadays most text editors happen to be a leaf in that composition hierarchy, thus playing a role of an end point. Those text editors do not allow developers to easily integrate arbitrary visual components within a text therefore forcing programmers to treat text, and visual elements differently.
 
 During development, it is not unusual to have to manipulate large text files, such as for configurations or logs. To this end, an important requirement for a practical text editor is to be scalable.
 
@@ -105,11 +105,11 @@ The Moldable Editor is a flexible and scalable editor designed as a single compo
 
 One of the requirements for that type of the editor is an ability to embed visual components inside of text such that they are not deletable nor selectable. We call those elements \textit{adornments}. To unify how text and adornments are being treated, the editor also represents pieces of text as visual elements, thus completely removing a gap between embedded graphical components and text which is what allows us to have a single composition tree.
 
-The basis and foundation of the editor is a text model. An interesting aspect of that text model is the fact that it is data structure independent. It allows us to implement different types of text types, for example \ct{SubText}, that can creates a subset of existing text within an interval, or \ct{SpanText}, that represents a uniform piece of text where all characters have identical attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \ct{Text} API. More about text model can be found in Section \ref{TextModelSection}.
+The basis and foundation of the editor is a text model. An interesting aspect of that text model is the fact that it is data structure independent. It allows us to implement different text types, for example \ct{SubText}, that is a subset of existing text within an interval, or \ct{SpanText}, that represents a uniform piece of text where all characters have identical attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \ct{Text} API. More about text model can be found in Section \ref{TextModelSection}.
 
-When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model API or created automatically by text stylers. Text stylers play an important role in syntax highlighting used by code editor.  Even more important role they play in the moldable editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such as text parsing and styling should happen in a parallel background thread. It is in fact a non-trivial task, since users are able to perform text modification operations while a styler applies attributes on a text that is being modified. In Section \ref{TextStyleSection} we talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
+When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model API or created automatically by text stylers. Text stylers play an important role in syntax highlighting as part of the code editor.  Even more important role they play in the Moldable Editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such as text parsing and styling should happen in a parallel background thread. It is in fact a non-trivial task, since users are able to perform text modification operations while a styler applies attributes on a text that is being modified. In Section \ref{TextStyleSection} we talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
 
-In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are held by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part is explained in more details in Section \ref{SegmentsAndRenderingSection}.
+In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are held by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part is explained in more detail in Section \ref{SegmentsAndRenderingSection}.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------- T E X T   M O D E L ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ To display and edit text, an editor requires a text model that provides text mod
 %------------------------------------------------------------------ T E X T   D A T A   S T R U C T U R E S ------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Text data structures}
 
-To be considered scalable the moldable editor should be able to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. After searching for a data structure to be used by a text model we realised that there is no a "silver bullet" data structure that is memory efficient, has the fastest random access and modification operations. Instead, it turned out that depending on a context and a way text editor will be used it may be important to be able to select one or another data structure based on its properties. That is why a text model of the moldable editor is data structure independent and only defines a public API. In order for it to be used by a text editor developers should create concrete implementations of that API backed up by the data structure of choice. In the following sub-sections we look at different data structures being used by text editors and compare them.
+To be considered scalable the moldable editor should be able to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. After searching for a data structure to be used by a text model we realised that there is no "silver bullet" data structure that is memory efficient, has the fastest random access and modification operations. Instead, it turned out that depending on a context and a way text editor will be used it may be important to be able to select one or another data structure based on its properties. That is why a text model of the moldable editor is data structure independent and only defines a public API. In order for it to be used by a text editor developers should create concrete implementations of that API backed up by the data structure of choice. In the following sub-sections we look at different data structures being used by other text editors and compare them.
 
 \subsection{Pharo}
 
@@ -300,7 +300,7 @@ An object responsible for styling of a source code is called \textit{syntax high
 \end{figure}
 
 \newpage
-One possible solution would be to implement a locking mechanism and allow only one thread to modify and access text at a time. However, it would make the overall implementation more complex and will affect performance in a negative way. Another solution is to create a copy of a text in the UI thread and let styler operate on that copy. This way text editor and styler threads do not share a text instance and can operate independently. The downside of that method is a need to create a copy of a text while blocking a UI thread during the copying process. Once styling is complete an original text should be replaced with a styled one on UI thread. However, if original text was modified during syntax highlighting we can not replace it with a styled copy and must discard it.
+One possible solution would be to implement a locking mechanism and only allow one thread to modify and access text at a time. However, it would make the overall implementation more complex and will affect performance in a negative way. Another solution is to create a copy of a text in the UI thread and let styler operate on that copy. This way text editor and styler threads do not share a text instance and can operate independently. The downside of that method is a need to create a copy of a text while blocking a UI thread during the copying process. Once styling is complete an original text should be replaced with a styled one on UI thread. However, if original text was modified during syntax highlighting we can not replace it with a styled copy and must discard it.
 
 \figref{EditorTextStylingSequence} gives a high level overview of how synchronisation problem is solved in the Moldable Editor:
 
@@ -366,11 +366,11 @@ Once segments are constructed, the editor creates visual elements to represent t
 
 \subsection*{Scalability}
 
-The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 100MB of text, and yet it opens smoothly (\figref{MoldableEditor100MB}).
+The moldable editor is both flexible and scalable. For example, the following piece is a sizeable 100MB of text, and yet it opens smoothly (\figref{MoldableEditor100MB}). It only takes around 100ms to open an editor window displaying previously mentioned text piece on MacBook Pro 2017.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.65\columnwidth]{images/moldable-editor-scalable.png}
+\includegraphics[width=0.55\columnwidth]{images/moldable-editor-scalable.png}
 \caption{The Moldable Editor opened on a 100MB text}
 \figlabel{MoldableEditor100MB}
 \end{figure}
@@ -495,7 +495,7 @@ To get an idea of how this tool can be useful, take a look at the following exam
 \figlabel{GtTranscriptAnimation}
 \end{figure}
 
-There we have a rectangle element with a white circle element as its direct child. Once element is constructed we apply a composite Bloc animation that consists of scale transformation, color transition. Additionally, we apply translation animation on the circle. During the animation multiple parameters get changed which makes textual logging a tedious task. However, instead of text users could directly log visual elements, which appear as image snapshots in the Transcript.
+There we have a rectangle element with a white circle as its direct child. Once element is constructed we apply a composite Bloc animation that consists of scale transformation and color transition. Additionally, we apply translation animation on the circle to make to move along a parabolic path. During the animation multiple parameters get changed which makes textual logging a tedious task. However, instead of text users could directly log visual elements, which appear as image snapshots in the Transcript.
 
 \bigskip
 
@@ -574,11 +574,11 @@ As shown on the \figref{GtDocumenterMondrianExpandedExamples} the Documenter fac
 
 In introduction we discuss why text editor is an important and central tool. Being able to mix text and visual elements can enable new sorts of interfaces. For that to be possible a text editor has to be moldable, hence flexible. This thesis shows that to archive moldability an editor should be represented as a single composition tree of visual elements. However, to be usable and practical it also has to be scalable and performant. In Section \ref{TheMoldableEditor} we show how \textit{Rope} data structure can be used to allow editor to manipulate large pieces of text and describe how only visible \textit{segments} of text are created and rendered.
 
-To validate the model we implemented the code editor with an ability of expanding method code right in-place, the Transcript, the Connector and the Documenter. These tools are built on top of the same editor infrastructure around the concept of \textit{adornments} and a single composition tree of graphical elements.
+To validate the model we implemented the code editor with ability to expand methods right in-place, the Transcript, the Connector and the Documenter. These tools are built on top of the same editor infrastructure around the concept of \textit{adornments} and a single composition tree of graphical elements.
 
-Nonetheless, this work only scratches a surface of what can be done with the Moldable Editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. There is still a lot that should be done and we have to walk through a long path that lies in front of us. While the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critiques adornments.
+Nonetheless, this work only scratches a surface of what can be done with the Moldable Editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. Nevertheless, while the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critiques adornments.
 
-Nevertheless, we proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
+Nonetheless, we proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
 
 One more application for this text editor is code snippets \footnote{\url{http://scg.unibe.ch/wiki/projects/Snippets-GTPlayground}} that we consider a future work. The idea would be to create an interface that allows users to split a single playground script into multiple independent \textit{snippets} that can be executed and managed independently.
 
@@ -604,19 +604,28 @@ Another application of the Moldable Editor would be a code editor for inspector 
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
 
-The Moldable Editor is a part of Brick\footnote{\url{https://github.com/pharo-graphics/Brick}}, a widget library on top of \textit{Bloc}, new low level vector graphical framework for \textit{Pharo}.
+In this chapter we go through the installation process of the Moldable Editor and its applications. 
+\section{Prerequisites}
 
-It can be installed in Pharo 6 or later by executing the following script in \textit{Playground}:
-\begin{lstlisting}[language=Smalltalk, caption={Brick installation script},captionpos=b, label={lst:BrickInstallationScript}]
-Metacello new
-    baseline: 'Brick';
-    repository: 'github://pharo-graphics/Brick/src';
-    load: #core
-\end{lstlisting}
+As of February 2018, the Moldable Editor requires stable Pharo 6.1\footnote{\url{https://pharo.org/download}} that can be downloaded from the official Pharo webpage. Users should choose a Pharo package depending on their operating system as shown on \figref{InstallPharoDownload}:
 
-The applications of the Moldable Editor (Transcript, Connector and Documenter) are part of the Glamorous Toolkit (GT)\footnote{\url{https://github.com/feenkcom/gtoolkit}}, which is the second generation of GT\footnote{\url{http://gtoolkit.org/}} that is based on the Bloc project.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{images/install-pharo-download-os.png}
+\caption{Pharo download page with prepared packages for different operating systems}
+\figlabel{InstallPharoDownload}
+\end{figure}
 
-It can be installed with the help of the following script:
+Once downloaded, users can proceed to the installation and setup procedure as described in Section \ref{AnleitungSetup}. 
+
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------- S E T U P -------------------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\newpage
+\section{Setup}
+\label{AnleitungSetup}
+
+To install GToolkit users should execute the following script in \lstref{GToolkitInstallationScript}:
 
 \begin{lstlisting}[language=Smalltalk, caption={GToolkit installation script},captionpos=b, label={lst:GToolkitInstallationScript}]
 Metacello new
@@ -625,7 +634,185 @@ Metacello new
    load.
 \end{lstlisting}
 
+It can be done from the Playground (\figref{InstallPharoPlayground}) that can be opened from the World Menu. To open the World Menu users should click anywhere on the background within the Pharo window. The installation script can be executed by clicking on the green play button in the top right corner of the Playground.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\columnwidth]{images/install-pharo-playground.png}
+\caption{World menu and Playground with GToolkit installation script}
+\figlabel{InstallPharoPlayground}
+\end{figure}
+
+As soon as script is executed an installation process should start as shown on the \figref{InstallGtoolkitBaseline}. An image may become unresponsive during the installation.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.70\columnwidth]{images/install-gtoolkit-baseline.png}
+\caption{Installation process of GToolkit}
+\figlabel{InstallGtoolkitBaseline}
+\end{figure}
+
+\newpage
+\section{Usage}
+
+This section shows how to create an instance of the editor for a source code, GT Example and Pillar document. We also explain how adornments can be used manually.
+
+\subsection*{Source code}
+
+In this part we build an editor for the \ct{#fullDrawOn:} method implemented in the \ct{Morph} class.
+
+As a first step we create a text model with a \textit{Rope} as a backend data structure. To do that we send \ct{#asRopedText} message to the source code of the chosen compiled method:
+\begin{lstlisting}[language=Smalltalk]
+	text := (Morph>>#fullDrawOn:) sourceCode asRopedText.
+\end{lstlisting}
+
+Since we build an editor for a smalltalk code we should use an appropriate code styler, in this case \ct{BrRBTextStyler}. To perform a correct syntax highlighting styler needs to know a text context, in this case it is the \ct{Morph} class in which \ct{#fullDrawOn:} method is implemented:
+\begin{lstlisting}[language=Smalltalk]
+	styler := BrRBTextStyler new.	styler classOrMetaClass: Morph.
+\end{lstlisting}
+
+Once we have a text and a styler we can proceed to the instance creation of the editor model. We configure that model with the styler and the text that we instantiated during previous steps (note, the configuration order does not matter): 
+\begin{lstlisting}[language=Smalltalk]
+	editor := BrTextEditor new.	editor text: text.	editor styler: styler.
+\end{lstlisting}
+
+After finishing with the model we can move to the UI part and create an editor element. We configure layout constraints of the editor element to match parent in both horizontal and vertical directions. It means that the editor will try to fill all available space of its parent element:
+\begin{lstlisting}[language=Smalltalk]
+	element := BrEditorElement new.
+	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal matchParent.		layoutConstraints vertical matchParent ].
+\end{lstlisting}
+
+\newpage
+However, sometimes users may want the editor to be large enough to fit all the text. To archive this behaviour we should ask layout constraints of the editor to fit content:
+\begin{lstlisting}[language=Smalltalk]
+	element := BrEditorElement new.
+	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal fitContent.		layoutConstraints vertical fitContent ].
+\end{lstlisting}
+
+Another option would be to create an editor of the exact size, for example 500pt width and 300pt height:
+
+\begin{lstlisting}[language=Smalltalk]
+	element := BrEditorElement new.
+	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal exact: 500.		layoutConstraints vertical exact: 300 ].
+\end{lstlisting}
+
+\bigskip
+\textit{Layout constraints can be configured independently, for example it is possible to match parent horizontally and fit content vertically, or the other way around.}
+\bigskip
+
+Last but not least, we should attach our editor model to the editor element:
+\begin{lstlisting}[language=Smalltalk]
+	element editor: editor.
+\end{lstlisting}
+
+When we put all snippets together and inspect the result in Playground we should get an editor with syntax highlighting  as shown on \figref{TutorialSourceCode}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-source-code.png}
+\caption{The Moldable Editor (on the right) opened on a source code of the \ct{fullDrawOn:} method}
+\figlabel{TutorialSourceCode}
+\end{figure}
+
+\newpage
+\subsection*{GT-Example}
+
+Let's create an editor for a GT-Example method with ability to expand its dependencies.
+\bigskip
+
+Most of the code will be the same, except for the \textit{text} and \textit{styler}. Since we want to build an editor for a GT example, we should first create a text model from the source code of that example. We also choose to have a monospace font, therefore apply a font family attribute of generic \textit{monospace} type and make it not overwritable by the styler:
+
+\begin{lstlisting}[language=Smalltalk]
+	text := (BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting) sourceCode asRopedText.	text attributes: { BrFontGenericFamilyAttribute monospace beNotOverwritableByStyler }.
+\end{lstlisting}
+
+To make editor know and understand dependencies of the example method we use a slightly modified syntax highlighter built for GT-Examples:
+
+\begin{lstlisting}[language=Smalltalk]
+	styler := GtExamplesStyler new.	styler classOrMetaClass: BrTextEditorExamples.
+\end{lstlisting}
+
+When composed and executed, users should get an editor capable of expanding dependencies of GT-Examples. Compared to the editor for source code, there are additional grey triangles along the text. They are visual elements with attached click event handlers that expand the source code of the dependent method as shown on \figref{TutorialGtExample}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-gt-example.png}
+\caption{The Moldable Editor (on the right) opened on the source code of the GT-Example method with expanded dependencies}
+\figlabel{TutorialGtExample}
+\end{figure}
+
+
+\newpage
+\subsection*{Pillar}
+
+In this section we build a live editor for Pillar documents.
+\bigskip
+
+Similar to the editor for GT-Examples we only make changes to the \textit{text} and \textit{styler}.
+Imagine we have a pillar file named \ct{connector.pillar} in the same folder as Pharo image. When inspected it appears to be a plain text file as shown on \figref{TutorialPillarRaw}. One can notice a reference to the example on the last line. In a default text editor that reference is displayed as a plain text. The goal is to build an editor that would render a result of the execution of the method referenced by our Pillar file right in-place.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-pillar-raw.png}
+\caption{The content of a Pillar file opened in a traditional text editor}
+\figlabel{TutorialPillarRaw}
+\end{figure}
+
+First of all we should create a file reference to our Pillar file:
+\begin{lstlisting}[language=Smalltalk]
+	pillar := 'connector.pillar' asFileReference.
+\end{lstlisting}
+
+Next, we should read its content and create a roped text:
+\begin{lstlisting}[language=Smalltalk]
+	text := pillar contents asRopedText.
+\end{lstlisting}
+
+Finally, we have to instantiate a special styler that knows how to parse a Pillar file. We pass a reference to the original pillar file to help styler resolve possible image file references relative to the folder in which the Pillar file is located:
+\begin{lstlisting}[language=Smalltalk]
+	styler := GtPillarStyler new.	styler fileReference: pillar.
+\end{lstlisting}
+
+\newpage
+
+The rest of the code is exactly the same as in the \textit{Source code} section. \figref{TutorialPillarEditor} shows a resulting editor opened on the \ct{connector.pillar}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-pillar-editor.png}
+\caption{The content of a Pillar file opened in the Moldable Editor}
+\figlabel{TutorialPillarEditor}
+\end{figure}
+
+\newpage
+\subsection*{Adornments}
+
+In this section we take a look at how \textit{adornment} text attributes can be used to replace text with visual elements. The same attributes can also be used to append visual elements to a piece of text leaving it untouched.
+
+\bigskip
+
+\ct{BrTextAdornmentDynamicAttribute} can be used to mix visual elements in the text. The following snippet creates an instance of a dynamic adornment that replaces a piece of text on which it is applied with a grey circle:
+\begin{lstlisting}[language=Smalltalk]
+BrTextAdornmentDynamicAttribute new	beReplace;	elementBlock: [ (BlEllipse radius: 20) asElement ]
+\end{lstlisting}
+
+When applied on a \ct{Hello world} piece of text of font size 30 on a character at index 8 (character \ct{o}) we get a text as shown on \figref{TutorialAdornmentReplace}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-adornments-replace.png}
+\caption{An example of adornment that replaces a piece of text with an ellipse element}
+\figlabel{TutorialAdornmentReplace}
+\end{figure}
+
+The same attribute can be used to append a circle after a character at index 8 by sending \ct{beAppend} instead of \ct{beReplace} to the attribute. The difference can be clearly seen on the \figref{TutorialAdornmentAppend}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{images/tutorial-adornments-append.png}
+\caption{An example of adornment that appends an ellipse element after a character}
+\figlabel{TutorialAdornmentAppend}
+\end{figure}
 
 %END Doc
 %-------------------------------------------------------
