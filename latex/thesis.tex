@@ -91,7 +91,7 @@ Playgrounds, like Swift\footnote{\url{https://developer.apple.com/swift/playgrou
 %===================================================================================================
 
 \chapter {The Moldable Editor}
-
+\label{TheMoldableEditor}
 \section{Overview}
 
 \begin{figure}[t]
@@ -572,11 +572,29 @@ As shown on the \figref{GtDocumenterMondrianExpandedExamples} the Documenter fac
 
 \chapter {Conclusion and Future Work}
 
-This work only scratches a surface of what can be done with a text editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. There is still a lot that should be done and we have to walk through a long path that lies in front of us. While the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critiques adornments.
+In introduction we discuss why text editor is an important and central tool. Being able to mix text and visual elements can enable new sorts of interfaces. For that to be possible a text editor has to be moldable, hence flexible. This thesis shows that to archive moldability an editor should be represented as a single composition tree of visual elements. However, to be usable and practical it also has to be scalable and performant. In Section \ref{TheMoldableEditor} we show how \textit{Rope} data structure can be used to allow editor to manipulate large pieces of text and describe how only visible \textit{segments} of text are created and rendered.
 
-Nevertheless, this work proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
+To validate the model we implemented the code editor with an ability of expanding method code right in-place, the Transcript, the Connector and the Documenter. These tools are built on top of the same editor infrastructure around the concept of \textit{adornments} and a single composition tree of graphical elements.
+
+Nonetheless, this work only scratches a surface of what can be done with the Moldable Editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. There is still a lot that should be done and we have to walk through a long path that lies in front of us. While the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critiques adornments.
+
+Nevertheless, we proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
 
 One more application for this text editor is code snippets \footnote{\url{http://scg.unibe.ch/wiki/projects/Snippets-GTPlayground}} that we consider a future work. The idea would be to create an interface that allows users to split a single playground script into multiple independent \textit{snippets} that can be executed and managed independently.
+
+Another application of the Moldable Editor would be a code editor for inspector and debugger. There, live objects are already bound to variables. Hence, instead of exploring interesting objects in standalone object inspectors or pop-up views, developers could embed directly in the editor relevant views of those objects (\figref{MethodViews}).
+
+\begin{figure*}[h]
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/future-methodI.png}\figlabel{Method_SimpleCode}}
+        \hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/future-methodII.png}
+\figlabel{Method_DateReplacement}}
+        \hspace{0.1cm}
+\subfloat[]{\includegraphics[width=0.32\textwidth]{images/future-methodIII.png}
+\figlabel{Method_ComputationReplacement}}
+\caption{Three different ways to display the code of a method: \emph{a)} the standard textual representation; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
+\figlabel{MethodViews}
+\end{figure*}
 
 %===================================================================================================
 %===================================================================================================
