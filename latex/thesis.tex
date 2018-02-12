@@ -31,7 +31,7 @@ We present a scalable and moldable text editor modelled as a single composition 
 
 Almost all programming languages are purely textual and developers spend most of their time reading and writing code. It makes text editors an important tool in software development. They also happen to be a central IDE tool used by programmers to edit code.
 
-Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable}\cite{Chis16d} and should allow users to augment code with any graphical components easily going beyond the predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
+Source code is usually a plain text without any additional formatting, compared to word processor documents or documents written using markup languages. However, modern code editors facilitate syntax highlighting to improve code readability without changing the text meaning. Nevertheless, in most cases, syntax highlighting does not take domain or live objects into account thus still leaving developers with textual representation. This issue can be addressed through code editors allowing developers to seamlessly augment textual code with additional visual information or graphical views for run-time objects. In order for developers to benefit the most, such editors have to be flexible, hence, \textit{moldable}~\cite{Chis16d} and should allow users to augment code with any graphical components easily going beyond the predefined ones. By any graphical component we mean the whole spectrum of widgets, scalable visualisations or even recursive integration of text editors in themselves. 
 
 \begin{quotation}
 \noindent 
@@ -44,7 +44,7 @@ We already know that when it comes to a general user interface and widgets in pa
 During development, it is not unusual to have to manipulate large text files, such as for configurations or logs. To this end, an important requirement for a practical text editor is to be scalable.
 
 \bigskip
-In the first part, we explain in more detail how the editor is implemented and describe a rope data structure\cite{boehm1995ropes} behind a text model. Additionally, we introduce a way of storing text attributes and their underlying text sequence in the same data structure.
+In the first part, we explain in more detail how the editor is implemented and describe a rope data structure~\cite{boehm1995ropes} behind a text model. Additionally, we introduce a way of storing text attributes and their underlying text sequence in the same data structure.
 
 In the second part, we discuss a few applications of such an editor to show how a single composition tree makes that editor flexible, and what it could mean to have it in a live programming environment.
 
@@ -58,9 +58,9 @@ In conclusion we present a few directions in which the editor could evolve. We a
 
 \chapter {Related Work}
 
-Since one of the first formal descriptions of a text editor was proposed in the early 1980s \cite{SUFRIN1982157} there exists a plethora of work on text editors.
+Since one of the first formal descriptions of a text editor was proposed in the early 1980s~\cite{SUFRIN1982157} there exists a plethora of work on text editors.
 
-An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors (\figref{RelatedEditors} \emph{(a)}).
+An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects~\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors (\figref{RelatedEditors} \emph{(a)}).
 
 \begin{figure*}[h]
 \centering
@@ -71,7 +71,7 @@ An ability to embed pictures or other graphical components is not new and can be
 \end{figure*}
 
 \newpage
-An interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} which combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
+An interesting example is the Jupyter Notebook\footnote{\url{http://jupyter.org/}} which combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
 
 For example, MPS\footnote{\url{https://www.jetbrains.com/mps/}} takes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor (\figref{RelatedEditors} \emph{(b)}).
 
@@ -142,7 +142,7 @@ In Pharo there already exist two text models based on different data structures:
 \figlabel{ArrayText}
 \end{figure}
 
-\ct{Text} is the default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \ct{ByteString} which is nothing other than an immutable array of characters. It means that every text modification such as insertion or deletion requires a text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown in \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences  \cite{crowley1998data}.
+\ct{Text} is the default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \ct{ByteString} which is nothing other than an immutable array of characters. It means that every text modification such as insertion or deletion requires a text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown in \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences~\cite{crowley1998data}.
 
 \subsubsection*{TxText}
 
@@ -153,16 +153,16 @@ In Pharo there already exist two text models based on different data structures:
 \figlabel{LinkedListText}
 \end{figure}
 
-\ct{TxModel} is a central class representing a text in the \textit{TxText editor}. Internally it stores character sequences as a double-linked list of spans that consist of an actual text content. A linked list is considered to be an extreme choice as opposed to an array for storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest choices among all other text data structures \cite{crowley1998data}.
+\ct{TxModel} is a central class representing a text in the \textit{TxText editor}. Internally it stores character sequences as a double-linked list of spans that consist of an actual text content. A linked list is considered to be an extreme choice as opposed to an array for storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest choices among all other text data structures~\cite{crowley1998data}.
 
 \subsection{Atom}
 
-The Atom\footnote{\url{https://atom.io/}} text editor uses a memory-efficient data structure similar to a Piece Table \cite{atomblog2018}. A piece table is a data structure based on two buffers, one of which represents original read-only text while the second one stores all modifications to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. A piece table is considered to be the data structure of choice for a text editor \cite{crowley1998data}.
+The Atom\footnote{\url{https://atom.io/}} text editor uses a memory-efficient data structure similar to a Piece Table~\cite{atomblog2018}. A piece table is a data structure based on two buffers, one of which represents original read-only text while the second one stores all modifications to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. A piece table is considered to be the data structure of choice for a text editor~\cite{crowley1998data}.
 
 \newpage
 \subsection{Emacs}
 
-Emacs\footnote{\url{https://www.gnu.org/software/emacs/}} is based on a Gap Buffer, a data structure a little more complex as array but much more efficient \cite{crowley1998data}. The idea behind the gap buffer is simple, the whole text is stored in a large buffer that contains a gap at a cursor location or at a place where editing operations happen. Of course, this means that the gap must first be moved to the locus of the insertion or deletion. When the gap is correctly positioned editing operations are very efficient since the size of a buffer is small. However, the first editing command in one part of a large buffer, after previously editing in another far-away part, sometimes involves a noticeable delay \cite{emacs2017}. A delay happens because to move a gap the whole buffer that stores the text has to be reallocated and memory to be moved.
+Emacs\footnote{\url{https://www.gnu.org/software/emacs/}} is based on a Gap Buffer, a data structure a little more complex as array but much more efficient~\cite{crowley1998data}. The idea behind the gap buffer is simple, the whole text is stored in a large buffer that contains a gap at a cursor location or at a place where editing operations happen. Of course, this means that the gap must first be moved to the locus of the insertion or deletion. When the gap is correctly positioned editing operations are very efficient since the size of a buffer is small. However, the first editing command in one part of a large buffer, after previously editing in another far-away part, sometimes involves a noticeable delay~\cite{emacs2017}. A delay happens because to move a gap the whole buffer that stores the text has to be reallocated and memory to be moved.
 
 \begin{figure}[ht]
 \centering
@@ -175,7 +175,7 @@ Emacs\footnote{\url{https://www.gnu.org/software/emacs/}} is based on a Gap Buff
 
 \subsection{Rope}
 
-An alternative to array or buffer-based data structures is a rope\cite{boehm1995ropes}. A rope is a tree of concatenation nodes representing character strings. In addition to concatenation nodes, depending on implementation, a rope may include subset nodes, reverse nodes or other custom types of nodes. A rope allows text editors to manipulate large pieces of text and makes text operations such as random access, insertion and deletion very efficient. However, to maintain high efficiency a rope must be re-balanced otherwise it may lose its binary search tree properties and operations become inefficient.
+An alternative to array or buffer-based data structures is a rope~\cite{boehm1995ropes}. A rope is a tree of concatenation nodes representing character strings. In addition to concatenation nodes, depending on implementation, a rope may include subset nodes, reverse nodes or other custom types of nodes. A rope allows text editors to manipulate large pieces of text and makes text operations such as random access, insertion and deletion very efficient. However, to maintain high efficiency a rope must be re-balanced otherwise it may lose its binary search tree properties and operations become inefficient.
 
 If all operations are implemented in a non-destructive way, a rope becomes a persistent data structure. To enforce that, any modification should return a new node instance with applied changes. A root node of the returned rope, in this case, does not necessarily have the same type as the one that was modified. From a text editor perspective, persistence makes it easier to implement undo/redo commands and helps to prevent multithreading issues when it comes to text styling.
 
@@ -244,7 +244,7 @@ Instead of creating a separate data structure for text attributes, it is possibl
 \figlabel{RopeAttributeNode}
 \end{figure}
 
-Additionally, attribute node makes it easier and more efficient to iterate over text \textit{spans}, pieces of text where all characters have the same attributes. This iteration is necessary during the rendering or text measurement process, where every span has to be rendered or measured separately, since underlying 2D graphics libraries are only capable of rendering text sequences of the same pre-set style\cite{skiaText}\cite{cairoText}.
+Additionally, attribute node makes it easier and more efficient to iterate over text \textit{spans}, pieces of text where all characters have the same attributes. This iteration is necessary during the rendering or text measurement process, where every span has to be rendered or measured separately, since underlying 2D graphics libraries are only capable of rendering text sequences of the same pre-set style~\cite{skiaText,cairoText}.
 
 \subsubsection*{Implementation}
 
@@ -476,8 +476,8 @@ To get an idea of how this tool can be useful, take a look at the following exam
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\columnwidth]{images/gt-transcript-animation.png}
-\caption{Visual logging of Animation with GT Transcript}
+\includegraphics[width=0.7\columnwidth]{images/gt-transcript-animation.png}
+\caption{Visual logging of the animation with GT Transcript}
 \figlabel{GtTranscriptAnimation}
 \end{figure}
 
@@ -493,7 +493,7 @@ To implement GT Transcript there were no changes made to the underlying editor m
 \section{Connector}
 
 In Section \ref{SyntaxHighlightingAndAdornments}, we saw how example dependencies can be expanded in place by using the syntax highlighter. A Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
-The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}\cite{Brag10a}.
+The interface is somewhat similar to the one proposed by Code Bubbles\footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}~\cite{Brag10a}.
 
 \begin{figure}[h]
 \centering

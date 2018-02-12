@@ -37,8 +37,7 @@ Andrei Chi\c{s}.
 \bibitem{Citr95}
 Wayne Citrin, Michael Doherty, and Benjamin Zorn.
 \newblock Visual object-oriented programming.
-\newblock chapter The Design of Completely Visual OOP Language, pages 67--93.
-  Manning Publications Co., Greenwich, CT, USA, 1995.
+\newblock pages 67--93. Manning Publications Co., Greenwich, CT, USA, 1995.
 
 \bibitem{crowley1998data}
 Charles Crowley.
@@ -48,14 +47,14 @@ Charles Crowley.
 
 \bibitem{emacs2017}
 Inc. Free Software~Foundation.
-\newblock The buffer gap - gnu emacs lisp reference manual.
+\newblock {The Buffer Gap --- GNU Emacs Lisp Reference Manual}.
 \newblock
   \url{https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-Gap.html#Buffer-Gap},
   April 2017.
 
 \bibitem{atomblog2018}
 GitHub Inc.
-\newblock The state of atom's performance.
+\newblock The state of {Atom's} performance.
 \newblock
   \url{http://blog.atom.io/2018/01/10/the-state-of-atoms-performance.html},
   January 2018.
@@ -68,7 +67,7 @@ Dan Ingalls.
 
 \bibitem{cairoText}
 Behdad~Esfahbod Keith~Packard, Carl~Worth.
-\newblock Cairo documentation - showglyphs.
+\newblock {Cairo Documentation --- showGlyphs}.
 \newblock
   \url{https://cairographics.org/manual/cairo-text.html#cairo-show-glyphs}.
 
@@ -82,7 +81,7 @@ Andrew~J. Ko and Brad~A. Myers.
 \bibitem{Malo10}
 John Maloney, Mitchel Resnick, Natalie Rusk, Brian Silverman, and Evelyn
   Eastmond.
-\newblock The scratch programming language and environment.
+\newblock The {Scratch} programming language and environment.
 \newblock {\em Trans. Comput. Educ.}, 10(4):16:1--16:15, November 2010.
 
 \bibitem{McDi13a}
@@ -94,12 +93,12 @@ Sean McDirmid.
 
 \bibitem{Pere07}
 F.~Perez and B.~E. Granger.
-\newblock Ipython: A system for interactive scientific computing.
+\newblock {IPython: A System for Interactive Scientific Computing}.
 \newblock {\em Computing in Science Engineering}, 9(3):21--29, May 2007.
 
 \bibitem{skiaText}
 Google Skia~Inc.
-\newblock Skia documentation - drawtext.
+\newblock {Skia Documentation --- drawText}.
 \newblock \url{https://skia.org/user/api/SkCanvas_Reference#SkCanvas_drawText}.
 
 \bibitem{SUFRIN1982157}

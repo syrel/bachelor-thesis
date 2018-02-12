@@ -6,24 +6,24 @@ Database file #1: thesis.bib
 Warning--empty booktitle in Citr95
 You've used 18 entries,
             2118 wiz_defined-function locations,
-            623 strings with 7371 characters,
-and the built_in function-call counts, 6481 in all, are:
+            622 strings with 7345 characters,
+and the built_in function-call counts, 6466 in all, are:
 = -- 663
 > -- 260
-< -- 11
-+ -- 107
+< -- 10
++ -- 106
 - -- 86
-* -- 420
+* -- 416
 := -- 1026
 add.period$ -- 59
 call.type$ -- 18
 change.case$ -- 97
 chr.to.int$ -- 0
 cite$ -- 19
-duplicate$ -- 260
-empty$ -- 526
+duplicate$ -- 259
+empty$ -- 524
 format.name$ -- 86
-if$ -- 1412
+if$ -- 1409
 int.to.chr$ -- 0
 int.to.str$ -- 18
 missing$ -- 12
@@ -35,9 +35,9 @@ purify$ -- 79
 quote$ -- 0
 skip$ -- 206
 stack$ -- 0
-substring$ -- 414
-swap$ -- 81
-text.length$ -- 11
+substring$ -- 413
+swap$ -- 80
+text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 72

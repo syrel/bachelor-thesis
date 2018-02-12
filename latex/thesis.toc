@@ -13,10 +13,10 @@
 \contentsline {chapter}{\numberline {4}The Validation}{19}{chapter.4}
 \contentsline {section}{\numberline {4.1}Overview}{19}{section.4.1}
 \contentsline {section}{\numberline {4.2}Transcript}{21}{section.4.2}
-\contentsline {section}{\numberline {4.3}Connector}{26}{section.4.3}
-\contentsline {section}{\numberline {4.4}Documenter}{27}{section.4.4}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{30}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{32}{chapter.6}
-\contentsline {section}{\numberline {6.1}Prerequisites}{32}{section.6.1}
-\contentsline {section}{\numberline {6.2}Setup}{33}{section.6.2}
-\contentsline {section}{\numberline {6.3}Usage}{34}{section.6.3}
+\contentsline {section}{\numberline {4.3}Connector}{25}{section.4.3}
+\contentsline {section}{\numberline {4.4}Documenter}{26}{section.4.4}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{29}{chapter.5}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{31}{chapter.6}
+\contentsline {section}{\numberline {6.1}Prerequisites}{31}{section.6.1}
+\contentsline {section}{\numberline {6.2}Setup}{32}{section.6.2}
+\contentsline {section}{\numberline {6.3}Usage}{33}{section.6.3}
