@@ -35,7 +35,7 @@ Source code is usually a plain text without any additional formatting, compared 
 
 \begin{quotation}
 \noindent 
-The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object - a visual element, hence removing a conceptual gap between text and widgets within the editor.
+The goal of this work is to show how a text editor can be represented in the same composition tree as the rest of the widgets, so that every tiny graphical bit would be an object --- a visual element, hence removing a conceptual gap between text and widgets within the editor.
 \end{quotation}
 
 \newpage
@@ -44,11 +44,11 @@ We already know that when it comes to a general user interface and widgets in pa
 During development, it is not unusual to have to manipulate large text files, such as for configurations or logs. To this end, an important requirement for a practical text editor is to be scalable.
 
 \bigskip
-In the first part, we explain in more detail how the editor is implemented and describe a rope data structure behind a text model. Additionally, we introduce a way of storing text attributes and underlying text sequence in the same data structure.
+In the first part, we explain in more detail how the editor is implemented and describe a rope data structure\cite{boehm1995ropes} behind a text model. Additionally, we introduce a way of storing text attributes and their underlying text sequence in the same data structure.
 
 In the second part, we discuss a few applications of such an editor to show how a single composition tree makes that editor flexible, and what it could mean to have it in a live programming environment.
 
-In the conclusion we present a few directions in which the editor could evolve. We also discuss possible use-cases and more applications of the editor in a context of a live programming environment such as debugger, inspector or live code snippets.
+In conclusion we present a few directions in which the editor could evolve. We also discuss possible use cases and more applications of the editor in the context of a live programming environment such as a debugger, an inspector or live code snippets.
 
 %===================================================================================================
 %===================================================================================================
@@ -58,9 +58,9 @@ In the conclusion we present a few directions in which the editor could evolve. 
 
 \chapter {Related Work}
 
-Since one of the first formal description of a text editor in the early 1980s \cite{SUFRIN1982157} there exist a plethora of work on text editors.
+Since one of the first formal descriptions of a text editor was proposed in the early 1980s \cite{SUFRIN1982157} there exists a plethora of work on text editors.
 
-An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects ~\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors (\figref{RelatedEditors} \emph{(a)}).
+An ability to embed pictures or other graphical components is not new and can be found in text editors incorporating visual aspects\cite{Inga88a,Bosh97a,Ko06b,Pere07,Malo10,Brag10a,McDi13a,Asen14,Voel16a}, in various fields.  Highly relevant for this work are approaches combining code and graphical views, common in the area of projectional editors (\figref{RelatedEditors} \emph{(a)}).
 
 \begin{figure*}[h]
 \centering
@@ -71,9 +71,9 @@ An ability to embed pictures or other graphical components is not new and can be
 \end{figure*}
 
 \newpage
-An interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} that combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
+An interesting example is the Jupyter Notebook \footnote{\url{http://jupyter.org/}} which combines live code, visualisations and explanatory text to create documents (\figref{JupyterPreview}).
 
-For example, MPS \footnote{\url{https://www.jetbrains.com/mps/}}, makes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor (\figref{RelatedEditors} \emph{(b)}).
+For example, MPS\footnote{\url{https://www.jetbrains.com/mps/}} takes one step forward by displaying domain entities using graphical views (e.g., editing a matrix using a table view, editing a state machine using a graph view); views are selected based structural aspects of the code. Envision\footnote{\url{http://dimitar-asenov.github.io/Envision/}}, proposed a highly scalable visual editor (\figref{RelatedEditors} \emph{(b)}).
 
 \begin{figure}[t]
 \centering
@@ -103,13 +103,13 @@ Playgrounds, like Swift\footnote{\url{https://developer.apple.com/swift/playgrou
 
 The Moldable Editor is a flexible and scalable editor designed as a single composition tree of visual elements.
 
-One of the requirements for that type of the editor is an ability to embed visual components inside of text such that they are not deletable nor selectable. We call those elements \textit{adornments}. To unify how text and adornments are being treated, the editor also represents pieces of text as visual elements, thus completely removing a gap between embedded graphical components and text which is what allows us to have a single composition tree.
+One of the requirements for that type of the editor is an ability to embed visual components inside of text so that they are neither deletable nor selectable. We call such elements \textit{adornments}. To unify how text and adornments are treated, the editor also represents pieces of text as visual elements, thus bridging a gap between embedded graphical components and text which is what allows us to have a single composition tree.
 
-The basis and foundation of the editor is a text model. An interesting aspect of that text model is the fact that it is data structure independent. It allows us to implement different text types, for example \ct{SubText}, that is a subset of existing text within an interval, or \ct{SpanText}, that represents a uniform piece of text where all characters have identical attributes. From the text editor's perspective there is no difference between those types of text, the interaction happens through a clear \ct{Text} API. More about text model can be found in Section \ref{TextModelSection}.
+The basis and foundation of the editor is a text model. An interesting aspect of that text model is the fact that it is data structure independent. It allows us to implement different text types, for example \ct{SubText}, which is a subset of existing text within an interval, or \ct{SpanText}, which represents a uniform piece of text where all characters have identical attributes. From the text editor's perspective there is no difference between those types of text, so the interaction happens through a clear \ct{Text} API. More about text model can be found in Section \ref{TextModelSection}.
 
-When talking about text model we should not forget about text style, which is defined by a set of text attributes. Those attributes can be applied on the text manually with the help of corresponding text model API or created automatically by text stylers. Text stylers play an important role in syntax highlighting as part of the code editor.  Even more important role they play in the Moldable Editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug-in custom behaviour in the editor. Text stylers take context into account which is essential for creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such as text parsing and styling should happen in a parallel background thread. It is in fact a non-trivial task, since users are able to perform text modification operations while a styler applies attributes on a text that is being modified. In Section \ref{TextStyleSection} we talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
+When talking about the text model we should not forget about the text style, which is defined by a set of text attributes. Those attributes can be applied to the text manually with the help of corresponding text model API or created automatically by text stylers. Text stylers play an important role in syntax highlighting as part of the code editor.  Even more important is the role they play in the Moldable Editor as they are used to add \textit{adornment} attributes and hence provide a nice way to plug in custom behaviour in the editor. Text stylers take context into account which is essential for the creation of context-aware development tools. In order for the editor to be fast and responsive, long and time consuming operations such as text parsing and styling should happen in a parallel background thread. It is in fact a non-trivial task, since users are able to perform text modification operations while a styler applies attributes on a text that is being modified. In Section \ref{TextStyleSection} we talk more about problems and difficulties related to text styling and introduce a solution that is currently implemented in and used by the moldable text editor.
 
-In order for the moldable editor to be scalable, it should split text into logical segments and render only those ones that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is a difficult part and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are held by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words - text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part is explained in more detail in Section \ref{SegmentsAndRenderingSection}.
+In order for the moldable editor to be scalable, it should split text into logical segments and render only those that are currently visible. A segment can be a page, a paragraph or a line. In the current implementation, the text editor creates line segments with the help of a line segment builder. The process of splitting text into segments is trivial, however keeping segments in sync with the text model after modification such as insertions and deletions is difficult and very error-prone. Once segments are built they should be rendered as visual elements and displayed within the editor. The way it happens is similar to how modern scrolling lists work, for example \textit{FastTable} in Pharo, \textit{RecyclerView}\footnote{\url{https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html}} in Android or \textit{UITableView}\footnote{\url{https://developer.apple.com/documentation/uikit/uitableview}} in iOS. Segments are held by a data source object which knows how segments should be represented. It is also responsible for binding a segment model to its visual representation. In most cases a logical segment consists of multiple segment pieces, for example a line segment consists of words --- text pieces separated by a white space. White space itself is also a piece within a line segment. A structure of the segment and its visual part is explained in more detail in Section \ref{SegmentsAndRenderingSection}.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------- T E X T   M O D E L ---------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -122,13 +122,13 @@ In order for the moldable editor to be scalable, it should split text into logic
 \figlabel{TextModelUml}
 \end{figure}
 
-To display and edit text, an editor requires a text model that provides text modification and enumeration API. In a context of text editor by \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of API methods to support text modifications such as \ct{insert:} or \ct{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing users to iterate over all characters in a natural ordered way. Being indexable is an essential property of a text model, since text stylers require text to have characters accessible by index. Code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals in a form of a \textit{[from, to]} tuple. Those intervals are later used by a text styler to apply attributes on a piece of text within those intervals.
+To display and edit text, an editor requires a text model that provides text modification and enumeration API. In the context of a text editor, by \textit{Text} we understand an object that consists of a collection of characters with a set of attributes applied on those characters and a number of API methods to support text modifications such as \ct{insert:} or \ct{delete:}. Additionally, text should play a role of sequenceable and indexable collection, allowing users to iterate over all characters in a natural ordered way. Being indexable is an essential property of a text model, since text stylers require text to have characters accessible by index. Code parsers create an \textit{AST} which consists of nodes bound to original text with the help of integer intervals in a form of a \textit{[from, to]} tuple. Those intervals are later used by a text styler to apply attributes on a piece of text within those intervals.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %------------------------------------------------------------------ T E X T   D A T A   S T R U C T U R E S ------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \section{Text data structures}
 
-To be considered scalable the moldable editor should be able to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. After searching for a data structure to be used by a text model we realised that there is no "silver bullet" data structure that is memory efficient, has the fastest random access and modification operations. Instead, it turned out that depending on a context and a way text editor will be used it may be important to be able to select one or another data structure based on its properties. That is why a text model of the moldable editor is data structure independent and only defines a public API. In order for it to be used by a text editor developers should create concrete implementations of that API backed up by the data structure of choice. In the following sub-sections we look at different data structures being used by other text editors and compare them.
+To be considered scalable the moldable editor should be able to manipulate large pieces of text that consist of millions of characters and sometimes even more. It means that choosing an appropriate data structure for storing text is crucial. After searching for a data structure to be used by a text model we realised that there is no ``silver bullet" data structure that is memory efficient, has the fastest random access and modification operations. Instead, it turned out that depending on the context and the way a text editor will be used it may be important to be able to select one or another data structure based on its properties. That is why the text model of the moldable editor is data structure independent and only defines a public API. In order for it to be used by a text editor developers should create concrete implementations of that API backed up by the data structure of choice. In the following sub-sections we look at different data structures being used by other text editors and compare them.
 
 \subsection{Pharo}
 
@@ -142,7 +142,7 @@ In Pharo there already exist two text models based on different data structures:
 \figlabel{ArrayText}
 \end{figure}
 
-\ct{Text} is a default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \ct{ByteString} which is nothing else than an immutable array of characters. It means that every text modification such as insertion or deletion requires text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown on \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences  \cite{crowley1998data}.
+\ct{Text} is the default Pharo text model. It stores a collection of characters and a set of attributes separately. Characters are represented with the help of \ct{ByteString} which is nothing other than an immutable array of characters. It means that every text modification such as insertion or deletion requires a text model to allocate and copy the whole array while replacing a subsequence of characters with a requested one as shown in \figref{ArrayText} The algorithm of text modifications is in this case linear time and requires massive memory copy operations, which becomes unacceptably slow when text size growths over hundreds of thousands of characters. In fact, array is the worst data structure for text sequences  \cite{crowley1998data}.
 
 \subsubsection*{TxText}
 
@@ -153,11 +153,11 @@ In Pharo there already exist two text models based on different data structures:
 \figlabel{LinkedListText}
 \end{figure}
 
-\ct{TxModel} is a central class representing a text in the \textit{TxText editor}. Internally is stores character sequences as a double-linked list of spans that consists of an actual text content. A linked list is considered to be an extreme as opposed to an array method of storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest among all other text data structures \cite{crowley1998data}.
+\ct{TxModel} is a central class representing a text in the \textit{TxText editor}. Internally it stores character sequences as a double-linked list of spans that consist of an actual text content. A linked list is considered to be an extreme choice as opposed to an array for storing text. While insertions and deletions in a linked list are fast and easy, it is only indexable in a linear time which makes styling one of the slowest choices among all other text data structures \cite{crowley1998data}.
 
 \subsection{Atom}
 
-Atom\footnote{\url{https://atom.io/}} text editor uses a memory-efficient data structure similar to a Piece Table \cite{atomblog2018}. Piece table is a data structure based on two buffers, one of which represents original read-only text while the second one stores all modifications done to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. Piece table is considered to be the data structure of choice for a text editor \cite{crowley1998data}.
+The Atom\footnote{\url{https://atom.io/}} text editor uses a memory-efficient data structure similar to a Piece Table \cite{atomblog2018}. A piece table is a data structure based on two buffers, one of which represents original read-only text while the second one stores all modifications to that text. All essential operations are performed with an adequate performance and some of them can  be efficiently improved by using cache. A piece table is considered to be the data structure of choice for a text editor \cite{crowley1998data}.
 
 \newpage
 \subsection{Emacs}
@@ -175,16 +175,16 @@ Emacs\footnote{\url{https://www.gnu.org/software/emacs/}} is based on a Gap Buff
 
 \subsection{Rope}
 
-An alternative to array or buffer-based data structures is Rope. Rope is a tree of concatenation nodes representing character strings. \cite{boehm1995ropes} In addition to concatenation nodes, depending on implementation, rope may include subset nodes, reverse nodes or other custom types of nodes. Rope allows text editors to manipulate large pieces of text and makes text operations such as random access, insertion and deletion very efficient. However, to maintain high efficiency rope must be re-balanced otherwise it may loose its binary search tree properties and operations become inefficient.
+An alternative to array or buffer-based data structures is a rope\cite{boehm1995ropes}. A rope is a tree of concatenation nodes representing character strings. In addition to concatenation nodes, depending on implementation, a rope may include subset nodes, reverse nodes or other custom types of nodes. A rope allows text editors to manipulate large pieces of text and makes text operations such as random access, insertion and deletion very efficient. However, to maintain high efficiency a rope must be re-balanced otherwise it may lose its binary search tree properties and operations become inefficient.
 
-If all operations are implemented in a non-destructive way, rope becomes a persistent data structure. To enforce that, any modification should return a new node instance with applied changes. A root node of the returned rope, in this case, does not necessarily have the same type as the one that was modified. From a text editor perspective, persistence makes it easier to implement undo/redo commands and helps to prevent multithreading issues when it comes to text styling.
+If all operations are implemented in a non-destructive way, a rope becomes a persistent data structure. To enforce that, any modification should return a new node instance with applied changes. A root node of the returned rope, in this case, does not necessarily have the same type as the one that was modified. From a text editor perspective, persistence makes it easier to implement undo/redo commands and helps to prevent multithreading issues when it comes to text styling.
 
-One of the main disadvantages of the Rope is its implementation complexity and high possibility of bugs as a consequence. Compared to other common text data structures, rope requires more memory space to store its tree structure. In languages without garbage collector, maintaining node references may be a tedious task and may lead to memory leaks.
+One of the main disadvantages of a rope is its implementation complexity and high possibility of bugs as a consequence. Compared to other common text data structures, a rope requires more memory space to store its tree structure. In languages without garbage collection, maintaining node references may be a tedious task and may lead to memory leaks.
 
-Due to its disadvantages, Rope didn't become a traditional and commonly used data structure to be used in text editors. For that reason it was not possible to see Rope in action, in a contrast to gap buffer or piece table that are nowadays used by modern and popular text editors. Its rare and complex nature, tree structure and possible object oriented implementation as also the existence of a garbage collector in Pharo made Rope a data structure of choice for the Moldable Editor.
+Due to its disadvantages, ropes didn't become a traditional and commonly used data structure to be used in text editors. For that reason it was not possible to see ropes in action, in a contrast to gap buffers or piece tables that are nowadays used by modern and popular text editors. Its rare and complex nature, tree structure and possible object oriented implementation as also the existence of a garbage collector in Pharo made ropes a data structure of choice for the Moldable Editor.
 
 \subsubsection*{Collection node}
-One of the main building blocks of the Rope is a \textit{collection} node (\figref{RopeCollectionNode}). It is nothing else than a fixed buffer of characters of a limited length.
+One of the main building blocks of ropes is a \textit{collection} node (\figref{RopeCollectionNode}). It is nothing other than a fixed buffer of characters of a limited length.
 
 \begin{figure}[h]
 \centering
@@ -196,7 +196,7 @@ If a total length of two collection nodes that are being merged exceeds a predef
 
 \subsubsection*{Concatenation node}
 
-\textit{Concatenation} node has a central role in the structure of the Rope. Similar to the binary search tree it knows its \textit{left} and \textit{right} child nodes.
+A \textit{concatenation} node has a central role in the structure of a rope. Similar to the binary search tree it knows its \textit{left} and \textit{right} child nodes.
 
 \begin{figure}[h]
 \centering
@@ -205,12 +205,12 @@ If a total length of two collection nodes that are being merged exceeds a predef
 \figlabel{RopeConcatenationNode}
 \end{figure}
 
-If a total length of two ropes being concatenated is lower then a predefined limit, then instead of creating a concatenation node, they can be merged into a single \textit{collection} node which allows Rope to be more memory-efficient and reduce amount of intermediate nodes.
+If a total length of two ropes being concatenated is lower then a predefined limit, then instead of creating a concatenation node, they can be merged into a single \textit{collection} node which allows a rope to be more memory-efficient and reduce amount of intermediate nodes.
 
 \newpage
 \subsubsection*{Subset node}
 
-An ability to get a substring defined by an index interval plays in important role for the text editor, for example in case of \textit{copy} or \textit{cut} commands. It can be implemented by introducing a \textit{subset} node that is a wrapper around other rope node with additional \ct{start} and \ct{end} attributes.
+An ability to get a substring defined by an index interval plays an important role for the text editor, for example in case of \textit{copy} or \textit{cut} commands. It can be implemented by introducing a \textit{subset} node that is a wrapper around another rope node with additional \ct{start} and \ct{end} attributes.
 
 \begin{figure}[h]
 \centering
@@ -221,7 +221,7 @@ An ability to get a substring defined by an index interval plays in important ro
 
 \subsubsection*{Attribute node}
 
-As it is mentioned in Section \ref{TextModelSection} \textit{Text} is not only a collection of characters but a set of associated attributes such as font size, text foreground or text style. Traditionally, attributes are stored in a separate data structure along a text sequence. For example \textit{Rubric} text model allocates a dedicated \textit{RunArray} of the same length as text itself, where every item is an array of attributes that corresponds to the character with identical index as shown on \figref{RubricTextAttributesArray}. However, according to \textit{RunArray's} class comment in \textit{Pharo} its internal implementation is space-efficient:
+As mentioned in Section \ref{TextModelSection} \textit{Text} is not only a collection of characters but a set of associated attributes such as font size, text foreground or text style. Traditionally, attributes are stored in a separate data structure along a text sequence. For example \textit{Rubric} text model allocates a dedicated \textit{RunArray} of the same length as text itself, where every item is an array of attributes that corresponds to the character with identical index as shown in \figref{RubricTextAttributesArray}. However, according to \textit{RunArray's} class comment in \textit{Pharo} its internal implementation is space-efficient:
 
 \begin{displayquote}
 My (note: RunArray) instances provide space-efficient storage of data which tends to be constant over long runs of the possible indices. Essentially repeated values are stored singly and then associated with a "run" length that denotes the number of consecutive occurrences of the value.
@@ -235,7 +235,7 @@ My (note: RunArray) instances provide space-efficient storage of data which tend
 \end{figure}
 
 \newpage
-Instead of creating a separate data structure for text attributes, it is possible to incorporate it directly inside of the rope hierarchy by introducing a new \textit{attribute} node. Attribute node is a wrapper around any rope node and it additionally stores a set of attributes that should be applied on that node as shown on \figref{RopeAttributeNode}. It makes it possible to apply attributes on the whole rope by only wrapping it in a single object. Interestingly, since \textit{attribute} node does not operate with text intervals, as opposed to \textit{RunArray}, there is no need to update those intervals when new text is inserted, as they get automatically expanded and applied on a new character sequence.
+Instead of creating a separate data structure for text attributes, it is possible to incorporate it directly inside of the rope hierarchy by introducing a new \textit{attribute} node. An attribute node is a wrapper around any rope node and it additionally stores a set of attributes that should be applied to that node as shown in \figref{RopeAttributeNode}. It makes it possible to apply attributes to the whole rope by only wrapping it in a single object. Interestingly, since an \textit{attribute} node does not operate with text intervals, as opposed to \textit{RunArray}, there is no need to update those intervals when new text is inserted, as they get automatically expanded and applied to a new character sequence.
 
 \begin{figure}[h]
 \centering
@@ -244,21 +244,7 @@ Instead of creating a separate data structure for text attributes, it is possibl
 \figlabel{RopeAttributeNode}
 \end{figure}
 
-Additionally, attribute node makes it easier and more efficient to iterate over text \textit{spans}, pieces of text where all characters have the same attributes. This iteration is necessary during the rendering or text measurement process, where every span has to be rendered or measured separately, since underlying 2D graphics libraries only capable of rendering text sequences of the same pre-set style.\cite{skiaText}\cite{cairoText}
-
-%
-%\begin{figure*}[h]
-%\centering
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-1.png}\figlabel{RopeTree1}}\hspace{0.1cm}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-2.png}\figlabel{RopeTree2}}\hspace{0.1cm}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-3.png}\figlabel{RopeTree3}}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-4.png}\figlabel{RopeTree4}}\hspace{0.1cm}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-5.png}\figlabel{RopeTree5}}\hspace{0.1cm}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-6.png}\figlabel{RopeTree6}}
-%\subfloat[]{\includegraphics[width=0.32\textwidth]{images/rope-tree-7.png}\figlabel{RopeTree7}}\hspace{0.1cm}
-%\caption{Three different ways to display the code of a method: \emph{a)} the standard Pharo Transcript; \emph{b)} replacing the data parameter using two distinct views; \emph{c)} replacing the results of several intermediary computations.}  
-%\figlabel{RopeTree}
-%\end{figure*}
+Additionally, attribute node makes it easier and more efficient to iterate over text \textit{spans}, pieces of text where all characters have the same attributes. This iteration is necessary during the rendering or text measurement process, where every span has to be rendered or measured separately, since underlying 2D graphics libraries are only capable of rendering text sequences of the same pre-set style\cite{skiaText}\cite{cairoText}.
 
 \subsubsection*{Implementation}
 
@@ -279,7 +265,7 @@ Additionally, attribute node makes it easier and more efficient to iterate over 
 \section{Text style}
 \label{TextStyleSection}
 
-Text styling and syntax highlighting play an important role in the editor and should be scalable and responsive. That is why, performing styling or syntax highlighting operations in a parallel thread is the only viable option. Unfortunately, it brings its own problems and difficulties such as thread safety and text synchronisation. One of the main problem is the fact that original text can be changed during styling process. Assume the code from the \lstref{NumberOdd} and imagine we would like to style \ct{false} keyword with a style corresponding to Smalltalk pseudo-variables.
+Text styling and syntax highlighting play an important role in the editor and should be scalable and responsive. That is why performing styling or syntax highlighting operations in a parallel thread is the only viable option. Unfortunately, it brings its own problems and difficulties such as thread safety and text synchronisation. One of the main problems is the fact that original text can be changed during the styling process. Assume the code from the \lstref{NumberOdd} and imagine we would like to style the \ct{false} keyword with a style corresponding to Smalltalk pseudo-variables.
 
 \begin{minipage}[h]{0.95\textwidth}
 \begin{lstlisting}[language=Smalltalk, caption={Implementation of the \textit{\#odd} testing method from the \textit{Number} class},captionpos=b, label={lst:NumberOdd}]
@@ -290,7 +276,7 @@ odd
 \end{lstlisting}
 \end{minipage}
 
-An object responsible for styling of a source code is called \textit{syntax highlighter}. It can be implemented as a visitor of the abstract syntax tree (AST) of that source code. Leaf AST nodes know their \ct{start} and sometimes \ct{stop} positions (\figref{NumberOffFalseAstNode}) within original source code. They can be used by a syntax highlighter to apply text attributes on a text within \textit{Interval}  of that node. In our example that node interval equals to \ct{(70 to: 74)}. The problem can occur if code gets changed after computation of its AST but right before attributes are applied on the text. For example if a user would delete any character from a source code, an interval \ct{(70 to:  74)} would be no more valid, because an overall length of that source code is 73 which leads to \ct{SubscriptOutOfBounds} exception.
+An object responsible for styling of a source code is called \textit{syntax highlighter}. It can be implemented as a visitor of the abstract syntax tree (AST) of that source code. Leaf AST nodes know their \ct{start} and sometimes \ct{stop} positions (\figref{NumberOffFalseAstNode}) within original source code. They can be used by a syntax highlighter to apply text attributes on a text within \textit{Interval}  of that node. In our example that node interval equals \ct{(70 to: 74)}. The problem can occur if code gets changed after computation of its AST but right before attributes are applied on the text. For example if a user would delete any character from a source code, an interval \ct{(70 to:  74)} would be no more valid, because an overall length of that source code is 73 which leads to \ct{SubscriptOutOfBounds} exception.
 
 \begin{figure}[h]
 \centering
@@ -300,9 +286,9 @@ An object responsible for styling of a source code is called \textit{syntax high
 \end{figure}
 
 \newpage
-One possible solution would be to implement a locking mechanism and only allow one thread to modify and access text at a time. However, it would make the overall implementation more complex and will affect performance in a negative way. Another solution is to create a copy of a text in the UI thread and let styler operate on that copy. This way text editor and styler threads do not share a text instance and can operate independently. The downside of that method is a need to create a copy of a text while blocking a UI thread during the copying process. Once styling is complete an original text should be replaced with a styled one on UI thread. However, if original text was modified during syntax highlighting we can not replace it with a styled copy and must discard it.
+One possible solution would be to implement a locking mechanism and only allow one thread to modify and access text at a time. However, it would make the overall implementation more complex and affect performance in a negative way. Another solution is to create a copy of a text in the UI thread and let the styler operate on that copy. This way the text editor and styler threads do not share a text instance and can operate independently. The downside of that method is a need to create a copy of a text while blocking a UI thread during the copying process. Once styling is complete an original text should be replaced with a styled one deferred on the UI thread. However, if an original text was modified during syntax highlighting we cannot replace it with a styled copy and must discard it.
 
-\figref{EditorTextStylingSequence} gives a high level overview of how synchronisation problem is solved in the Moldable Editor:
+\figref{EditorTextStylingSequence} gives a high level overview of how the synchronisation problem is solved in the Moldable Editor:
 
 \begin{figure}[h]
 \centering
@@ -312,9 +298,9 @@ One possible solution would be to implement a locking mechanism and only allow o
 \end{figure}
 
 \newpage
-As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used to check later whether the current editor's text is still a previous generation of the one that was styled. Since \textit{Rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that was copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
+As a first step the original text is asked to create a copy of itself and to mark it as a next generation: \ct{nextGeneration()}. In this case a special immutable identifier object is used to check later whether the current editor's text is still a previous generation of the one that was styled. Since a \textit{rope} is a persistent data structure it can be directly used as a generation identifier. Moreover, its immutability allows us to create new text copies without any additional overhead, because a copy simply refers to the same rope instance as a text that was copied. As soon as the editor receives a next generation back from the text it asks a styler object to perform necessary operations on that copy. On the other side, a styler responds to the \ct{style} message by terminating any existing styling process (in Pharo a green thread is called a \textit{Process}) and creating a new one that starts with a \ct{delay()} as its first operation. Delay allows styler to save computation resources by waiting until a user stops typing. It improves an overall editor responsiveness as perceived by the user. Exact delay time is configurable and may vary.
 
-As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking editor's integrity. Then editor checks whether the original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is a case, the editor asks current text model to replace its content with the content of the styled one, otherwise a styled version is discarded. As a final step editor performs invalidation to update the on screen rendering to correspond a new text state.
+As soon as text is styled a styler announces \ct{TextStyledEvent}, which indicates the fact that the process is finished. That announcement is deferred on the UI thread which allows the editor to handle the event in a synchronous way and perform all necessary invalidation operations without breaking the editor's integrity. Then the editor checks whether the original text was changed since the beginning of a styling process by making sure that a styled text is a next generation. If it is the case, the editor asks the current text model to replace its content with the content of the styled one, otherwise the styled version is discarded. As a final step editor performs invalidation to update the on screen rendering to correspond a new text state.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------- S E G M E N T S     A N D    R E N D E R I N G -----------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -322,7 +308,7 @@ As soon as text is styled a styler announces \ct{TextStyledEvent} that indicates
 \section{Segments and Rendering}
 \label{SegmentsAndRenderingSection}
 
-In order for the editor to be scalable it should be implemented in such a way that the overall performance is independent from the text size. A common technique to achieve it is to only process a part of the scene that is currently visible to the user. It means that we should not render and lay text out if it is outsize of the current viewport of the editor. Similar behaviour can be found in various graphical frameworks. A set of widgets that work only with visible elements includes for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android and others. Bloc \footnote{\url{https://github.com/pharo-graphics/Bloc}} graphical framework that is used as an underlying layer for the Moldable Editor contains such a widget, called \textit{InfiniteElement}, where \textit{infinite} stands for \textit{practically infinite} as it allows developers to create scrolling lists that are able to display large datasets. \figref{InfiniteList} shows a high level overview of the \textit{InfiniteElement's} scrolling behaviour. At any time only visible graphical elements are added to the composition tree. It allows text editor to render its content almost instantly and makes it possible to have smooth scrolling animation. When a viewport of the text editor is resized only a fraction of the overall text has to be remeasured and layered out.
+In order for the editor to be scalable it should be implemented in such a way that the overall performance is independent of the text size. A common technique to achieve this is to only process the part of the scene that is currently visible to the user. It means that we should not render and lay out text if it is outside of the current viewport of the editor. Similar behaviour can be found in various graphical frameworks. A set of widgets that work only with visible elements includes for example \textit{FastTable} in Pharo, \textit{RecyclerView} in Android and others. Bloc\footnote{\url{https://github.com/pharo-graphics/Bloc}}, a graphical framework that is used as an underlying layer for the Moldable Editor contains such a widget, called \textit{InfiniteElement}, where \textit{infinite} stands for \textit{practically infinite} as it allows developers to create scrolling lists that are able to display large datasets. \figref{InfiniteList} shows a high level overview of the \textit{InfiniteElement's} scrolling behaviour. At any time only visible graphical elements are added to the composition tree. It allows the text editor to render its content almost instantly and makes it possible to have smooth scrolling animation. When a viewport of the text editor is resized only a fraction of the overall text has to be remeasured and laid out.
 
 \begin{figure}[h]
 \centering
@@ -331,18 +317,18 @@ In order for the editor to be scalable it should be implemented in such a way th
 \figlabel{InfiniteList}
 \end{figure}
 
-However, the described approach has its own limitation. In order for the \textit{InfiniteElement} to create or reuse visual elements on demand, underlying data source has to be indexable and discrete. It means that the whole text has to be split in so called \textit{Segments}. In its current implementation, a \textit{Segment} represents a line of text, however, it can be a whole page or a collection of paragraphs. Nevertheless, if a text file is large (Gigabytes of data), reading it and splitting into segments becomes slow and inefficient. To solve this problem the editor pre-loads only a portion of the text and splits it into segments. \figref{TextModelSegments} shows how text segments are mapped on a pre-loaded portion of text and how that portion is related to the original text.
+However, the described approach has its own limitation. In order for the \textit{InfiniteElement} to create or reuse visual elements on demand, an underlying data source has to be indexable and discrete. It means that the whole text has to be split into so called \textit{Segments}. In its current implementation, a \textit{Segment} represents a line of text, however, it can be a whole page or a collection of paragraphs. Nevertheless, if a text file is large (Gigabytes of data), reading it and splitting it into segments becomes slow and inefficient. To solve this problem the editor pre-loads only a portion of the text and splits it into segments. \figref{TextModelSegments} shows how text segments are mapped to a pre-loaded portion of text and how that portion is related to the original text.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\columnwidth]{figures/text-model-segments.pdf}
-\caption{Segments}
+\includegraphics[width=0.82\columnwidth]{figures/text-model-segments.pdf}
+\caption{The mapping of the segments to the original text}
 \figlabel{TextModelSegments}
 \end{figure}
 
 \newpage
 
-Once segments are constructed, the editor creates visual elements to represent those segments. \figref{RenderingElementsMapping} shows how an editor element, opened on a two-line text, is composed. Every line is encapsulated into a segment and is rendered as \ct{TextEditorSegment.} Each segment is then split into pieces, in our case words. Finally, every word is rendered as \ct{RenderingElementsMapping.} A cursor is also a visual element and is contained by a word element which happens to have a focus. 
+Once segments are constructed, the editor creates visual elements to represent those segments. \figref{RenderingElementsMapping} shows how an editor element, opened on a two-line text, is composed. Every line is encapsulated into a segment and is rendered as \ct{TextEditorSegment.} Each segment is then split into pieces, in our case words. Finally, every word is rendered as \ct{RenderingElementsMapping.} A cursor is also a visual element and is contained by a word element that happens to have a focus. 
 
 \begin{figure}[t]
 \centering
@@ -393,7 +379,7 @@ For example, in the snippet below (\figref{EditorOnExampleCollapsed}), we see th
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\columnwidth]{images/editor-example-expanded.png}
-\caption{The editor with expanded example}
+\caption{The editor with an expanded example}
 \figlabel{EditorOnExampleExpanded}
 \end{figure}
 
@@ -409,7 +395,7 @@ The example above also reveals the way to initialise an editor element.
 
 Due to its rich abilities, the moldable editor has the potential of changing all tools that rely on textual representations. One such a tool is the Transcript.
 
-In a context Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. Existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them into a file.
+In the context of Pharo the \textit{Transcript} is a tool that allows users to log stream messages. Additionally, Pharo provides a user interface to show those messages. It means that when it comes to logging tools we should distinguish an API used to output to a stream and a user interface, which is one of the multiple ways to display  the output. The existing \textit{Transcript} in Pharo has an ability to display logged messages in a simple text editor or to write them to a file.
 
 \begin{figure*}[t]
 \centering
@@ -421,7 +407,7 @@ In a context Pharo the \textit{Transcript} is a tool that allows users to log st
 \figlabel{TranscriptTools}
 \end{figure*}
 
-Many languages have support of the message logging and their IDEs provide dedicated tools allowing users to browse and read that log. For example in \textit{JavaScript}, the \textit{Console} is an object with an API that can be used to log runtime artefacts such as strings, arrays, functions or object. By default, most modern web browsers are shipped with developer tools and one of them is an interactive console. For example Mozilla Firefox provides \textit{Web Console} \footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Web_Console}} which is different from Google Chrome's \textit{Console} \footnote{\url{https://developers.google.com/web/tools/chrome-devtools/console/}} while providing very similar functionality.
+Many languages have support for message logging and their IDEs provide dedicated tools allowing users to browse and read that log. For example in \textit{JavaScript}, the \textit{Console} is an object with an API that can be used to log runtime artefacts such as strings, arrays, functions or object. By default, most modern web browsers are shipped with developer tools and one of them is an interactive console. For example Mozilla Firefox provides \textit{Web Console}\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Web_Console}} which is different from Google Chrome's \textit{Console}\footnote{\url{https://developers.google.com/web/tools/chrome-devtools/console/}} while providing very similar functionality.
 
 The goal of GT Transcript is to offer a rich and interactive interface for displaying live information coming from a system.  
 
@@ -484,7 +470,7 @@ transcript next
 \newpage
 \subsection*{Logging an animation}
 
-When working on animations it is important to be able to debug them. Developers may find themselves in a situation where debugger is not helpful since it stops an animation process and only lets programmers to browse a frozen state. A different approach would be to observe how animation progresses over time. Traditionally, developers would insert logging statements and output changing parameters. However, textual representation may be a limited source of information. Instead, we propose to use GT Transcript, for visual logging of animation providing insight far superior to plain text.
+When working with animations it is important to be able to debug them. Developers may find themselves in a situation where a debugger is not helpful since it stops an animation process and only lets programmers to browse a frozen state. A different approach would be to observe how an animation progresses over time. Traditionally, developers would insert logging statements and output changing parameters. However, textual representation may be a limited source of information. Instead, we propose to use GT Transcript, for visual logging of animations providing insight far superior to plain text.
 
 To get an idea of how this tool can be useful, take a look at the following example on the \figref{GtTranscriptAnimation}:
 
@@ -495,18 +481,18 @@ To get an idea of how this tool can be useful, take a look at the following exam
 \figlabel{GtTranscriptAnimation}
 \end{figure}
 
-There we have a rectangle element with a white circle as its direct child. Once element is constructed we apply a composite Bloc animation that consists of scale transformation and color transition. Additionally, we apply translation animation on the circle to make to move along a parabolic path. During the animation multiple parameters get changed which makes textual logging a tedious task. However, instead of text users could directly log visual elements, which appear as image snapshots in the Transcript.
+There we have a rectangle element with a white circle as its direct child. Once an element is constructed we apply a composite Bloc animation that consists of a scale transformation and a color transition. Additionally, we apply a translation animation on the circle to make it move along a parabolic path. During the animation multiple parameters get changed which makes textual logging a tedious task. However, instead of text users could directly log visual elements, which appear as image snapshots in the Transcript.
 
 \bigskip
 
-To implement GT Transcript there were no changes made to the underlying editor model and all additional functionality was easily integrated which indicates editor's flexibility. In the following sections we continue to validate the Moldable Editor by putting it in more different contexts.
+To implement GT Transcript there were no changes made to the underlying editor model and all additional functionality was easily integrated which indicates the editor's flexibility. In the following sections we continue to validate the Moldable Editor by putting it in more different contexts.
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------- C O N N E C T O R -----------------------------------------------------------------------%------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \newpage
 \section{Connector}
 
-In Section \ref{SyntaxHighlightingAndAdornments}, we saw how example dependencies can be expanded in place by using the syntax highlighter. Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
+In Section \ref{SyntaxHighlightingAndAdornments}, we saw how example dependencies can be expanded in place by using the syntax highlighter. A Connector brings this a step further and proposes a new kind of interface that allows users to expand a new editor on an example method and to automatically connect editor elements with one another.
 The interface is somewhat similar to the one proposed by Code Bubbles \footnote{\url{http://cs.brown.edu/~spr/codebubbles/}}\cite{Brag10a}.
 
 \begin{figure}[h]
@@ -517,9 +503,9 @@ The interface is somewhat similar to the one proposed by Code Bubbles \footnote{
 \end{figure}
 
 However, it has two key differences:
-\begin{itemize}  
-\item the lines connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
-\item the lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
+\begin{itemize}
+\item lines can connect an element inside the text editor to the outside world. This is possible because the text is represented as elements that are rendered in the main rendering tree provided by the underlying Bloc framework.
+\item lines are added automatically to reveal dependencies that are otherwise more difficult to spot.
 \end{itemize}
 
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -527,7 +513,7 @@ However, it has two key differences:
 \newpage
 \section{Documenter}
 
-Documentation plays an important role during development process. Developers spend a sizeable amount of time on writing it, maintaining and evolving over time. Nowadays there exist techniques and automatisation processes that allow developers to create \textit{technical documentation} out of existing source code. Examples of such tools include Javadoc\footnote{\url{https://docs.oracle.com/javase/9/javadoc/javadoc.htm}}, Doxygen\footnote{\url{http://doxygen.org/}}, Visual Expert\footnote{\url{http://www.visual-expert.com/}}, to name a few. They help programmers to keep documentation up-to-date with almost no effort (\figref{Javadoc}). However, such documentation is too technical and may not satisfy all the needs of the users. Instead of browsing auto-generated documentation users of a library or a framework could benefit more from \textit{user documentation} such as tutorials, blog posts, thematics, guides or cheatsheets. One of the key-points of user documentation is an ability to mix plain text explanations with code snippets and some sort of a preview of the result of those code snippets, sometimes in a form of screenshots. That is where a problem of user documentation comes from; tutorials must be updated due to API changes or UI improvements that may lead to visible differences between screenshots and an actual output of the code snippets if they would be executed in a real environment. Additionally, tutorials are not meant to be testable in any automatic way, for example on CI servers. As a result it increases the cost of maintaining user documentation and may even have a negative impact if new users face issues or discrepancies in their expectations based on tutorial and real results.
+Documentation plays an important role during development process. Developers spend a sizeable amount of time on writing it, maintaining and evolving it over time. Nowadays there exist techniques and automatisation processes that allow developers to create \textit{technical documentation} outside of existing source code. Examples of such tools include Javadoc\footnote{\url{https://docs.oracle.com/javase/9/javadoc/javadoc.htm}}, Doxygen\footnote{\url{http://doxygen.org/}}, Visual Expert\footnote{\url{http://www.visual-expert.com/}}, to name a few. They help programmers to keep documentation up-to-date with almost no effort (\figref{Javadoc}). However, such documentation is too technical and may not satisfy all the needs of the users. Instead of browsing auto-generated documentation users of a library or a framework could benefit more from \textit{user documentation} such as tutorials, blog posts, thematics, guides or cheatsheets. One of the key points of user documentation is an ability to mix plain text explanations with code snippets and some sort of a preview of the result of those code snippets, sometimes in the form of screenshots. That is where a problem of user documentation comes from; tutorials must be updated due to API changes or UI improvements that may lead to visible differences between screenshots and the actual output of the code snippets if they would be executed in a real environment. Additionally, tutorials are not meant to be testable in any automatic way, for example on CI servers. As a result it increases the cost of maintaining user documentation and may even have a negative impact if new users face issues or discrepancies in their expectations based on tutorial and real results.
 
 \begin{figure*}[h]
 \centering
@@ -540,9 +526,9 @@ Documentation plays an important role during development process. Developers spe
 
 \newpage
 
-The goal of the Documenter is to reduce a cost of maintaining user documentation and make it easier for developers to write it.
+The goal of the Documenter is to reduce the cost of maintaining user documentation and make it easier for developers to write it.
 
-As a way to achieve it, the Documenter offers live rendering of Pillar\footnote{\url{https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html}} documents. For example, as shown on \figref{GtDocumenterMondrianExamplePictures} Documenter can embed pictures right in place.
+As a way to achieve it, the Documenter offers live rendering of Pillar\footnote{\url{https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html}} documents. For example, as shown in \figref{GtDocumenterMondrianExamplePictures} Documenter can embed pictures right in place.
 
 \begin{figure}[h]
 \centering
@@ -562,7 +548,7 @@ And it can even embed live code that can be previewed in place:
 \figlabel{GtDocumenterMondrianExpandedExamples}
 \end{figure}
 
-As shown on the \figref{GtDocumenterMondrianExpandedExamples} the Documenter facilitates an ability of the editor to mix visual components with text, in this case by recursively composing editors with each other in order to expand example's dependencies. It only becomes possible if we remove any constraints and enforce editor to treat all contained graphical components uniformly.
+As shown in \figref{GtDocumenterMondrianExpandedExamples} the Documenter facilitates an ability of the editor to mix visual components with text, in this case by recursively composing editors with each other in order to expand the example's dependencies. It only becomes possible if we remove any constraints and enforce the editor to treat all contained graphical components uniformly.
 
 %===================================================================================================
 %===================================================================================================
@@ -572,17 +558,18 @@ As shown on the \figref{GtDocumenterMondrianExpandedExamples} the Documenter fac
 
 \chapter {Conclusion and Future Work}
 
-In introduction we discuss why text editor is an important and central tool. Being able to mix text and visual elements can enable new sorts of interfaces. For that to be possible a text editor has to be moldable, hence flexible. This thesis shows that to archive moldability an editor should be represented as a single composition tree of visual elements. However, to be usable and practical it also has to be scalable and performant. In Section \ref{TheMoldableEditor} we show how \textit{Rope} data structure can be used to allow editor to manipulate large pieces of text and describe how only visible \textit{segments} of text are created and rendered.
+In the introduction we discuss why the text editor is an important and central tool. Being able to mix text and visual elements can enable new sorts of interfaces. For that to be possible a text editor has to be moldable, hence flexible. This thesis shows that to achieve moldability an editor should be represented as a single composition tree of visual elements. However, to be usable and practical it also has to be scalable and performant. In Section \ref{TheMoldableEditor} we show how a \textit{rope} data structure can be used to allow an editor to manipulate large pieces of text and describe how only visible \textit{segments} of text are created and rendered.
 
-To validate the model we implemented the code editor with ability to expand methods right in-place, the Transcript, the Connector and the Documenter. These tools are built on top of the same editor infrastructure around the concept of \textit{adornments} and a single composition tree of graphical elements.
+To validate the model we implemented the code editor with an ability to expand methods right in place, within the Transcript, the Connector and the Documenter. These tools are built on top of the same editor infrastructure around the concept of \textit{adornments} and a single composition tree of graphical elements. In Chapter \ref{Anleitung} we provide a step-by-step tutorial of how to build an editor for a source code, how to create a live editor for Pillar documents and take a look at a low level use of the \textit{adornments}.
 
-Nonetheless, this work only scratches a surface of what can be done with the Moldable Editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. Nevertheless, while the basic infrastructure and underlying model is in place the editor in its current state misses some important for usability features normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critiques adornments.
+Nonetheless, this work only scratches the surface of what can be done with the Moldable Editor. We already saw that it allows us to implement features and provide new experiences that are simply not possible in other editors. Nevertheless, while the basic infrastructure and underlying model is in place the editor in its current state misses some important features for usability that are normally used during day-to-day activities such as copy-paste, keyboard shortcuts, multiple text selection and smart cursor navigation. The Moldable Editor does not yet provide an auto-completion mechanism or common decorators which include line numbers, clickable links or code critique adornments.
 
-Nonetheless, we proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
+\newpage
+Nevertheless, we proved that it is indeed possible to implement a text editor that can be represented in a single composition tree of visual elements. More importantly, it showed that such an editor not only can exist on paper or as a prototype but can actually be performant enough to be usable. It scales well and is capable of opening large pieces of text. The choice of the underlying Rope data structure turned out to be a good idea. Its persistence property helped us to deal with text synchronisation problems in case of multithreaded use and background text styling.
 
-One more application for this text editor is code snippets \footnote{\url{http://scg.unibe.ch/wiki/projects/Snippets-GTPlayground}} that we consider a future work. The idea would be to create an interface that allows users to split a single playground script into multiple independent \textit{snippets} that can be executed and managed independently.
+One more application for this text editor is code snippets\footnote{\url{http://scg.unibe.ch/wiki/projects/Snippets-GTPlayground}} which we consider to be future work. The idea is to create an interface that allows users to split a single playground script into multiple independent \textit{snippets} that can be executed and managed independently.
 
-Another application of the Moldable Editor would be a code editor for inspector and debugger. There, live objects are already bound to variables. Hence, instead of exploring interesting objects in standalone object inspectors or pop-up views, developers could embed directly in the editor relevant views of those objects (\figref{MethodViews}).
+Another application of the Moldable Editor would be a code editor for an inspector and a debugger. There, live objects are already bound to variables. Hence, instead of exploring interesting objects in standalone object inspectors or pop-up views, developers could embed directly in the editor relevant views of those objects (\figref{MethodViews}).
 
 \begin{figure*}[h]
 \subfloat[]{\includegraphics[width=0.32\textwidth]{images/future-methodI.png}\figlabel{Method_SimpleCode}}
@@ -603,11 +590,12 @@ Another application of the Moldable Editor would be a code editor for inspector 
 %===================================================================================================
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
+\label{Anleitung}
 
 In this chapter we go through the installation process of the Moldable Editor and its applications. 
 \section{Prerequisites}
 
-As of February 2018, the Moldable Editor requires stable Pharo 6.1\footnote{\url{https://pharo.org/download}} that can be downloaded from the official Pharo webpage. Users should choose a Pharo package depending on their operating system as shown on \figref{InstallPharoDownload}:
+As of February 2018, the Moldable Editor requires the stable Pharo 6.1\footnote{\url{https://pharo.org/download}} that can be downloaded from the official Pharo webpage. Users should choose a Pharo package depending on their operating system as shown in \figref{InstallPharoDownload}:
 
 \begin{figure}[h]
 \centering
@@ -634,7 +622,7 @@ Metacello new
    load.
 \end{lstlisting}
 
-It can be done from the Playground (\figref{InstallPharoPlayground}) that can be opened from the World Menu. To open the World Menu users should click anywhere on the background within the Pharo window. The installation script can be executed by clicking on the green play button in the top right corner of the Playground.
+It can be done from the Playground (\figref{InstallPharoPlayground}), which can be opened from the World Menu. To open the World Menu users should click anywhere on the background within the Pharo window. The installation script can be executed by clicking on the green play button in the top right corner of the Playground.
 
 \begin{figure}[h]
 \centering
@@ -643,7 +631,7 @@ It can be done from the Playground (\figref{InstallPharoPlayground}) that can be
 \figlabel{InstallPharoPlayground}
 \end{figure}
 
-As soon as script is executed an installation process should start as shown on the \figref{InstallGtoolkitBaseline}. An image may become unresponsive during the installation.
+As soon as the script is executed an installation process should start as shown in \figref{InstallGtoolkitBaseline}. An image may become unresponsive during the installation.
 
 \begin{figure}[h]
 \centering
@@ -655,49 +643,58 @@ As soon as script is executed an installation process should start as shown on t
 \newpage
 \section{Usage}
 
-This section shows how to create an instance of the editor for a source code, GT Example and Pillar document. We also explain how adornments can be used manually.
+This section shows how to create an instance of the editor for the source code, aGT Example and Pillar document. We also explain how adornments can be used manually.
 
 \subsection*{Source code}
 
 In this part we build an editor for the \ct{#fullDrawOn:} method implemented in the \ct{Morph} class.
 
-As a first step we create a text model with a \textit{Rope} as a backend data structure. To do that we send \ct{#asRopedText} message to the source code of the chosen compiled method:
+As a first step we create a text model with a \textit{Rope} as a backend data structure. To do that we send the \ct{#asRopedText} message to the source code of the chosen compiled method:
 \begin{lstlisting}[language=Smalltalk]
 	text := (Morph>>#fullDrawOn:) sourceCode asRopedText.
 \end{lstlisting}
 
-Since we build an editor for a smalltalk code we should use an appropriate code styler, in this case \ct{BrRBTextStyler}. To perform a correct syntax highlighting styler needs to know a text context, in this case it is the \ct{Morph} class in which \ct{#fullDrawOn:} method is implemented:
+Since we build an editor for a Smalltalk code we should use an appropriate code styler, in this case \ct{BrRBTextStyler}. To perform a correct syntax highlighting the styler needs to know the text context, in this case it is the \ct{Morph} class in which the \ct{#fullDrawOn:} method is implemented:
 \begin{lstlisting}[language=Smalltalk]
-	styler := BrRBTextStyler new.	styler classOrMetaClass: Morph.
+	styler := BrRBTextStyler new.
+	styler classOrMetaClass: Morph.
 \end{lstlisting}
 
 Once we have a text and a styler we can proceed to the instance creation of the editor model. We configure that model with the styler and the text that we instantiated during previous steps (note, the configuration order does not matter): 
 \begin{lstlisting}[language=Smalltalk]
-	editor := BrTextEditor new.	editor text: text.	editor styler: styler.
+	editor := BrTextEditor new.
+	editor text: text.
+	editor styler: styler.
 \end{lstlisting}
 
-After finishing with the model we can move to the UI part and create an editor element. We configure layout constraints of the editor element to match parent in both horizontal and vertical directions. It means that the editor will try to fill all available space of its parent element:
+After finishing with the model we can move to the UI part and create an editor element. We configure the layout constraints of the editor element to match a parent in both the horizontal and the vertical directions. It means that the editor will try to fill all available space of its parent element:
 \begin{lstlisting}[language=Smalltalk]
 	element := BrEditorElement new.
-	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal matchParent.		layoutConstraints vertical matchParent ].
+	element constraintsDo: [ :layoutConstraints | 
+		layoutConstraints horizontal matchParent.
+		layoutConstraints vertical matchParent ].
 \end{lstlisting}
 
 \newpage
-However, sometimes users may want the editor to be large enough to fit all the text. To archive this behaviour we should ask layout constraints of the editor to fit content:
+However, sometimes users may want the editor to be large enough to fit all the text. To achieve this behaviour we should ask the layout constraints of the editor to fit its content:
 \begin{lstlisting}[language=Smalltalk]
 	element := BrEditorElement new.
-	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal fitContent.		layoutConstraints vertical fitContent ].
+	element constraintsDo: [ :layoutConstraints | 
+		layoutConstraints horizontal fitContent.
+		layoutConstraints vertical fitContent ].
 \end{lstlisting}
 
 Another option would be to create an editor of the exact size, for example 500pt width and 300pt height:
 
 \begin{lstlisting}[language=Smalltalk]
 	element := BrEditorElement new.
-	element constraintsDo: [ :layoutConstraints | 		layoutConstraints horizontal exact: 500.		layoutConstraints vertical exact: 300 ].
+	element constraintsDo: [ :layoutConstraints | 
+		layoutConstraints horizontal exact: 500.
+		layoutConstraints vertical exact: 300 ].
 \end{lstlisting}
 
 \bigskip
-\textit{Layout constraints can be configured independently, for example it is possible to match parent horizontally and fit content vertically, or the other way around.}
+\textit{Layout constraints can be configured independently, for example it is possible to match a parent horizontally and fit content vertically, or the other way around.}
 \bigskip
 
 Last but not least, we should attach our editor model to the editor element:
@@ -705,34 +702,36 @@ Last but not least, we should attach our editor model to the editor element:
 	element editor: editor.
 \end{lstlisting}
 
-When we put all snippets together and inspect the result in Playground we should get an editor with syntax highlighting  as shown on \figref{TutorialSourceCode}.
+When we put all snippets together and inspect the result in the Playground we should get an editor with syntax highlighting  as shown in \figref{TutorialSourceCode}.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{images/tutorial-source-code.png}
-\caption{The Moldable Editor (on the right) opened on a source code of the \ct{fullDrawOn:} method}
+\caption{The Moldable Editor (on the right) opened on the source code of the \ct{fullDrawOn:} method}
 \figlabel{TutorialSourceCode}
 \end{figure}
 
 \newpage
 \subsection*{GT-Example}
 
-Let's create an editor for a GT-Example method with ability to expand its dependencies.
+Let's create an editor for a GT-Example method with an ability to expand its dependencies.
 \bigskip
 
-Most of the code will be the same, except for the \textit{text} and \textit{styler}. Since we want to build an editor for a GT example, we should first create a text model from the source code of that example. We also choose to have a monospace font, therefore apply a font family attribute of generic \textit{monospace} type and make it not overwritable by the styler:
+Most of the code will be the same, except for the \textit{text} and the \textit{styler}. Since we want to build an editor for a GT example, we should first create a text model from the source code of that example. We also choose to have a monospace font, therefore apply a font family attribute of generic \textit{monospace} type and make it not overwritable by the styler:
 
 \begin{lstlisting}[language=Smalltalk]
-	text := (BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting) sourceCode asRopedText.	text attributes: { BrFontGenericFamilyAttribute monospace beNotOverwritableByStyler }.
+	text := (BrTextEditorExamples>>#elementOnMethodWithSyntaxHighlighting) sourceCode asRopedText.
+	text attributes: { BrFontGenericFamilyAttribute monospace beNotOverwritableByStyler }.
 \end{lstlisting}
 
-To make editor know and understand dependencies of the example method we use a slightly modified syntax highlighter built for GT-Examples:
+To make the editor know and understand dependencies of the example method we use a slightly modified syntax highlighter built for GT-Examples:
 
 \begin{lstlisting}[language=Smalltalk]
-	styler := GtExamplesStyler new.	styler classOrMetaClass: BrTextEditorExamples.
+	styler := GtExamplesStyler new.
+	styler classOrMetaClass: BrTextEditorExamples.
 \end{lstlisting}
 
-When composed and executed, users should get an editor capable of expanding dependencies of GT-Examples. Compared to the editor for source code, there are additional grey triangles along the text. They are visual elements with attached click event handlers that expand the source code of the dependent method as shown on \figref{TutorialGtExample}:
+When composed and executed, users should get an editor capable of expanding dependencies of GT-Examples. Compared to the editor for source code, there are additional grey triangles along the text. They are visual elements with attached click event handlers that expand the source code of the dependent method as shown in \figref{TutorialGtExample}:
 
 \begin{figure}[h]
 \centering
@@ -749,7 +748,7 @@ In this section we build a live editor for Pillar documents.
 \bigskip
 
 Similar to the editor for GT-Examples we only make changes to the \textit{text} and \textit{styler}.
-Imagine we have a pillar file named \ct{connector.pillar} in the same folder as Pharo image. When inspected it appears to be a plain text file as shown on \figref{TutorialPillarRaw}. One can notice a reference to the example on the last line. In a default text editor that reference is displayed as a plain text. The goal is to build an editor that would render a result of the execution of the method referenced by our Pillar file right in-place.
+Imagine we have a pillar file named \ct{connector.pillar} in the same folder as a Pharo image. When inspected it appears to be a plain text file as shown in \figref{TutorialPillarRaw}. One can notice a reference to the example on the last line. In a default text editor that reference is displayed as a plain text. The goal is to build an editor that would render a result of the execution of the method referenced by our Pillar file right in-place.
 
 \begin{figure}[h]
 \centering
@@ -770,12 +769,13 @@ Next, we should read its content and create a roped text:
 
 Finally, we have to instantiate a special styler that knows how to parse a Pillar file. We pass a reference to the original pillar file to help styler resolve possible image file references relative to the folder in which the Pillar file is located:
 \begin{lstlisting}[language=Smalltalk]
-	styler := GtPillarStyler new.	styler fileReference: pillar.
+	styler := GtPillarStyler new.
+	styler fileReference: pillar.
 \end{lstlisting}
 
 \newpage
 
-The rest of the code is exactly the same as in the \textit{Source code} section. \figref{TutorialPillarEditor} shows a resulting editor opened on the \ct{connector.pillar}:
+The rest of the code is exactly the same as in the \textit{Source code} section. \figref{TutorialPillarEditor} shows the resulting editor opened on the \ct{connector.pillar}:
 
 \begin{figure}[h]
 \centering
@@ -793,10 +793,12 @@ In this section we take a look at how \textit{adornment} text attributes can be 
 
 \ct{BrTextAdornmentDynamicAttribute} can be used to mix visual elements in the text. The following snippet creates an instance of a dynamic adornment that replaces a piece of text on which it is applied with a grey circle:
 \begin{lstlisting}[language=Smalltalk]
-BrTextAdornmentDynamicAttribute new	beReplace;	elementBlock: [ (BlEllipse radius: 20) asElement ]
+BrTextAdornmentDynamicAttribute new
+	beReplace;
+	elementBlock: [ (BlEllipse radius: 20) asElement ]
 \end{lstlisting}
 
-When applied on a \ct{Hello world} piece of text of font size 30 on a character at index 8 (character \ct{o}) we get a text as shown on \figref{TutorialAdornmentReplace}:
+When applied on a \ct{Hello world} piece of text of font size 30 on a character at index 8 (character \ct{o}) we get a text as shown in \figref{TutorialAdornmentReplace}:
 
 \begin{figure}[h]
 \centering
